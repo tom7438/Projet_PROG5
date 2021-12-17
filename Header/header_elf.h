@@ -1,22 +1,24 @@
+#include <stdint.h>
+#include <stdio.h>
 #ifndef __HEADER_ELF_H__
 #define __HEADER_ELF_H__
 
 #define EI_NIDENT 16
 
-typedef uint32_t Elf32_Addr
-typedef uint64_t Elf64_Addr
+typedef uint32_t Elf32_Addr;
+typedef uint32_t Elf32_Off;
 
-typedef uint32_t Elf32_Off
-typedef uint64_t Elf64_Off
+typedef uint64_t Elf64_Addr;
+typedef uint64_t Elf64_Off;
 
 typedef struct {
    unsigned char e_ident[EI_NIDENT];
    uint16_t      e_type;
    uint16_t      e_machine;
    uint32_t      e_version;
-   uint32_t      e_entry;
-   uint32_t      e_phoff;
-   uint32_t      e_shoff;
+   Elf32_Addr      e_entry;
+   Elf32_Off      e_phoff;
+   Elf32_Off      e_shoff;
    uint32_t      e_flags;
    uint16_t      e_ehsize;
    uint16_t      e_phentsize;
@@ -31,9 +33,9 @@ typedef struct {
    uint16_t      e_type;
    uint16_t      e_machine;
    uint32_t      e_version;
-   uint64_t      e_entry;
-   uint64_t      e_phoff;
-   uint64_t      e_shoff;
+   Elf64_Addr      e_entry;
+   Elf64_Off      e_phoff;
+   Elf64_Off      e_shoff;
    uint32_t      e_flags;
    uint16_t      e_ehsize;
    uint16_t      e_phentsize;
@@ -72,7 +74,7 @@ typedef struct {
 /* Etape 1 */
 /* readelf -h */
 void init_header(FILE *f, void * elf_h);
-void write_elf (FILE *f, void * elf_h); //
+void write_elf (FILE *f, void * elf_h);
 
 /* Etape 2 */
 /* readelf -S */
