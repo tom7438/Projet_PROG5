@@ -88,7 +88,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = ARM_runner_example$(EXEEXT)
+bin_PROGRAMS = ARM_runner_example$(EXEEXT) read_elf$(EXEEXT)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/hostsubdir.m4 \
@@ -112,6 +112,12 @@ am_ARM_runner_example_OBJECTS = $(am__objects_1) $(am__objects_2) \
 ARM_runner_example_OBJECTS = $(am_ARM_runner_example_OBJECTS)
 ARM_runner_example_LDADD = $(LDADD)
 ARM_runner_example_DEPENDENCIES =
+am__dirstamp = $(am__leading_dot)dirstamp
+am_read_elf_OBJECTS = elf_lib/elf_lib.$(OBJEXT) \
+	elf_read/elf_read.$(OBJEXT)
+read_elf_OBJECTS = $(am_read_elf_OBJECTS)
+read_elf_LDADD = $(LDADD)
+read_elf_DEPENDENCIES =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -130,7 +136,8 @@ am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/ARM_runner_example.Po \
 	./$(DEPDIR)/arm_simulator_interface.Po ./$(DEPDIR)/csapp.Po \
 	./$(DEPDIR)/debug.Po ./$(DEPDIR)/gdb_protocol.Po \
-	./$(DEPDIR)/scanner.Po ./$(DEPDIR)/util.Po
+	./$(DEPDIR)/scanner.Po ./$(DEPDIR)/util.Po \
+	elf_lib/$(DEPDIR)/elf_lib.Po elf_read/$(DEPDIR)/elf_read.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -150,8 +157,8 @@ am__v_LEX_ = $(am__v_LEX_@AM_DEFAULT_V@)
 am__v_LEX_0 = @echo "  LEX     " $@;
 am__v_LEX_1 = 
 YLWRAP = $(top_srcdir)/build-aux/ylwrap
-SOURCES = $(ARM_runner_example_SOURCES)
-DIST_SOURCES = $(ARM_runner_example_SOURCES)
+SOURCES = $(ARM_runner_example_SOURCES) $(read_elf_SOURCES)
+DIST_SOURCES = $(ARM_runner_example_SOURCES) $(read_elf_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -355,7 +362,9 @@ AM_CFLAGS = -Wall -Werror -g -D DEBUG -D WARNING -D \
 # parsing might result in debug flag incorrectly set to 0 for some files
 #AM_CFLAGS+=-D CACHE_DEBUG_FLAG
 LDADD = -lpthread
+AUTOMAKE_OPTIONS = subdir-objects
 SUBDIRS = . Examples_loader
+read_elf_SOURCES = elf_lib/elf_lib.h elf_lib/elf_lib.c elf_read/elf_read.c
 COMMON = debug.h debug.c util.h util.c
 EXTRA_DIST = filtre.pl sample_run.sh
 SIMULATOR_INTERFACE = csapp.h csapp.c scanner.h scanner.l gdb_protocol.h gdb_protocol.c arm_simulator_interface.h arm_simulator_interface.c
@@ -443,9 +452,31 @@ clean-binPROGRAMS:
 ARM_runner_example$(EXEEXT): $(ARM_runner_example_OBJECTS) $(ARM_runner_example_DEPENDENCIES) $(EXTRA_ARM_runner_example_DEPENDENCIES) 
 	@rm -f ARM_runner_example$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(ARM_runner_example_OBJECTS) $(ARM_runner_example_LDADD) $(LIBS)
+elf_lib/$(am__dirstamp):
+	@$(MKDIR_P) elf_lib
+	@: > elf_lib/$(am__dirstamp)
+elf_lib/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) elf_lib/$(DEPDIR)
+	@: > elf_lib/$(DEPDIR)/$(am__dirstamp)
+elf_lib/elf_lib.$(OBJEXT): elf_lib/$(am__dirstamp) \
+	elf_lib/$(DEPDIR)/$(am__dirstamp)
+elf_read/$(am__dirstamp):
+	@$(MKDIR_P) elf_read
+	@: > elf_read/$(am__dirstamp)
+elf_read/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) elf_read/$(DEPDIR)
+	@: > elf_read/$(DEPDIR)/$(am__dirstamp)
+elf_read/elf_read.$(OBJEXT): elf_read/$(am__dirstamp) \
+	elf_read/$(DEPDIR)/$(am__dirstamp)
+
+read_elf$(EXEEXT): $(read_elf_OBJECTS) $(read_elf_DEPENDENCIES) $(EXTRA_read_elf_DEPENDENCIES) 
+	@rm -f read_elf$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(read_elf_OBJECTS) $(read_elf_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f elf_lib/*.$(OBJEXT)
+	-rm -f elf_read/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
@@ -457,6 +488,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gdb_protocol.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scanner.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@elf_lib/$(DEPDIR)/elf_lib.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@elf_read/$(DEPDIR)/elf_read.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -465,15 +498,17 @@ $(am__depfiles_remade):
 am--depfiles: $(am__depfiles_remade)
 
 .c.o:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
@@ -817,6 +852,10 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f elf_lib/$(DEPDIR)/$(am__dirstamp)
+	-rm -f elf_lib/$(am__dirstamp)
+	-rm -f elf_read/$(DEPDIR)/$(am__dirstamp)
+	-rm -f elf_read/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -835,6 +874,8 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/gdb_protocol.Po
 	-rm -f ./$(DEPDIR)/scanner.Po
 	-rm -f ./$(DEPDIR)/util.Po
+	-rm -f elf_lib/$(DEPDIR)/elf_lib.Po
+	-rm -f elf_read/$(DEPDIR)/elf_read.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -889,6 +930,8 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/gdb_protocol.Po
 	-rm -f ./$(DEPDIR)/scanner.Po
 	-rm -f ./$(DEPDIR)/util.Po
+	-rm -f elf_lib/$(DEPDIR)/elf_lib.Po
+	-rm -f elf_read/$(DEPDIR)/elf_read.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
