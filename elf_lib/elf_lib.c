@@ -15,7 +15,7 @@
 int big = 0;
 
 size_t bread(void *ptr, size_t s, size_t n, FILE *f) {
-    if(big == 0) {
+    if (big == 0) {
         return fread(ptr, s, n, f);
     } else {
         char buffer[s];
@@ -28,7 +28,7 @@ size_t bread(void *ptr, size_t s, size_t n, FILE *f) {
         }
 
         for (int i = s-1; i >= 0; i--) {
-            *(int*)ptr++ = buffer[i];
+            *((char *)ptr++) = buffer[i];
         }
         return 1;
     }
@@ -48,13 +48,13 @@ void init_header(FILE *f, Elf32 * elf_h){
         exit(EXIT_FAILURE);
     }
 
+    // copie de tab_e_ident dans elf_h->e_dient
+    memcpy(elf_h->e_ident, tab_e_ident, EI_NIDENT);
+
     // si on a du big endian!!
     if (elf_h->e_ident[EI_DATA] == ELFDATA2MSB) {
         big = 1;
     }
-
-    // copie de tab_e_ident dans elf_h->e_dient
-    memcpy(elf_h->e_ident, tab_e_ident, EI_NIDENT);
 
     tmp = bread(&elf_h->e_type, sizeof(uint16_t), 1, f);
     assert(tmp);
@@ -87,8 +87,9 @@ void init_header(FILE *f, Elf32 * elf_h){
 void write_elf(FILE *f, Elf32 elf_h) {
     fprintf(f, "Magic Number : ");
     for(int k = 0; k < EI_NIDENT; k++){
-        fprintf(f, "%d ",elf_h.e_ident[k]);
-        }
+        fprintf(f, "%0.2x ",elf_h.e_ident[k]);
+    }
+
     fprintf(f,"\n");
 
     fprintf(f,"Class:\t\t\t\t   ");
@@ -106,49 +107,49 @@ void write_elf(FILE *f, Elf32 elf_h) {
 
     fprintf(f,"OS/ABI:\t\t\t\t   ");
     switch (elf_h.e_ident[EI_OSABI]) {
-    case ELFOSABI_SYSV :
-    fprintf(f,"UNIX - System V\n");break;
-    case ELFOSABI_HPUX:
-    fprintf(f,"HP-UX ABI\n");break;
-    case ELFOSABI_NETBSD:
-    fprintf(f,"NetBSD ABI\n");break;
-    case ELFOSABI_LINUX:
-    fprintf(f,"Linux ABI\n");break;
-    case ELFOSABI_SOLARIS :
-    fprintf(f,"Solaris ABI\n");break;
-    case ELFOSABI_IRIX:
-    fprintf(f,"IRIX ABI\n");break;
-    case ELFOSABI_FREEBSD :
-    fprintf(f,"FreeBSD ABI\n");break;
-    case ELFOSABI_TRU64:
-    fprintf(f,"TRU64 UNIX ABI\n");break;
-    case ELFOSABI_ARM:
-    fprintf(f,"ARM Architecture ABI\n");break;
-    case ELFOSABI_STANDALONE:
-    fprintf(f,"Stand-alone (embedded) ABI\n");break;
-    default:
-    fprintf(f,"Unknown OS/ABI\n");
+        case ELFOSABI_SYSV :
+            fprintf(f,"UNIX - System V\n");break;
+        case ELFOSABI_HPUX:
+            fprintf(f,"HP-UX ABI\n");break;
+        case ELFOSABI_NETBSD:
+            fprintf(f,"NetBSD ABI\n");break;
+        case ELFOSABI_LINUX:
+            fprintf(f,"Linux ABI\n");break;
+        case ELFOSABI_SOLARIS :
+            fprintf(f,"Solaris ABI\n");break;
+        case ELFOSABI_IRIX:
+            fprintf(f,"IRIX ABI\n");break;
+        case ELFOSABI_FREEBSD :
+            fprintf(f,"FreeBSD ABI\n");break;
+        case ELFOSABI_TRU64:
+            fprintf(f,"TRU64 UNIX ABI\n");break;
+        case ELFOSABI_ARM:
+            fprintf(f,"ARM Architecture ABI\n");break;
+        case ELFOSABI_STANDALONE:
+            fprintf(f,"Stand-alone (embedded) ABI\n");break;
+        default:
+            fprintf(f,"Unknown OS/ABI\n");
     }
 
-    fprintf(f,"ABI Version:\t\t\t   0\n"); //elf_h.e_ident[EI_ABIVERSION]
+    fprintf(f,"ABI Version:\t\t\t   %d\n", elf_h.e_ident[EI_ABIVERSION]);
 
     fprintf(f,"Type:\t\t\t\t   ");
     switch (elf_h.e_type){
     	case ET_NONE:
-    	fprintf(f,"No file type\n");break;
+    	    fprintf(f,"No file type\n");break;
     	case ET_REL:
-			fprintf(f,"REL (Relocatable file)\n");break;
-			case ET_EXEC:
-			fprintf(f,"EXEC (Executable file)\n");break;
-			case ET_DYN:
-			fprintf(f,"SO (Shared object file)\n");break;
-			case ET_CORE:
-			fprintf(f,"Core file\n");break;
-			case ET_LOPROC:
-			case ET_HIPROC:
-			fprintf(f,"Processor Specific\n");break;
-			default:
-			fprintf(f,"Unknown type\n");
+            fprintf(f,"REL (Relocatable file)\n");break;
+        case ET_EXEC:
+            fprintf(f,"EXEC (Executable file)\n");break;
+        case ET_DYN:
+            fprintf(f,"SO (Shared object file)\n");break;
+        case ET_CORE:
+            fprintf(f,"Core file\n");break;
+        case ET_LOPROC:
+        case ET_HIPROC:
+            fprintf(f,"Processor Specific\n");break;
+        default:
+            fprintf(f,"Unknown type\n");
     }
 
     fprintf(f,"Machine:\t\t\t   ");
@@ -199,23 +200,23 @@ void write_elf(FILE *f, Elf32 elf_h) {
 
     fprintf(f,"Entry point address:\t\t   %#x\n",elf_h.e_entry);
 
-		fprintf(f,"Start of program headers:\t   %d (bytes into file)\n",elf_h.e_phoff);
+    fprintf(f,"Start of program headers:\t   %d (bytes into file)\n",elf_h.e_phoff);
 
-		fprintf(f,"Start of section headers:\t   %d (bytes into file)\n",elf_h.e_shoff);
+    fprintf(f,"Start of section headers:\t   %d (bytes into file)\n",elf_h.e_shoff);
 
-		fprintf(f,"Flags:\t\t\t\t   %#x, Version5 EABI\n",elf_h.e_flags);
+    fprintf(f,"Flags:\t\t\t\t   %#x, Version5 EABI\n",elf_h.e_flags);
 
-		fprintf(f,"Size of this header:\t\t   %d (bytes)\n",elf_h.e_ehsize);
+    fprintf(f,"Size of this header:\t\t   %d (bytes)\n",elf_h.e_ehsize);
 
-		fprintf(f,"Size of program headers:\t   %d (bytes)\n",elf_h.e_phentsize);
+    fprintf(f,"Size of program headers:\t   %d (bytes)\n",elf_h.e_phentsize);
 
-		fprintf(f,"Number of program headers:\t   %d\n",elf_h.e_phnum);
+    fprintf(f,"Number of program headers:\t   %d\n",elf_h.e_phnum);
 
-		fprintf(f,"Size of section headers:\t   %d (bytes)\n",elf_h.e_shentsize);
+    fprintf(f,"Size of section headers:\t   %d (bytes)\n",elf_h.e_shentsize);
 
-		fprintf(f,"Number of section headers:\t   %d\n",elf_h.e_shnum);
+    fprintf(f,"Number of section headers:\t   %d\n",elf_h.e_shnum);
 
-		fprintf(f,"Section header string table index: %d\n",elf_h.e_phnum);
+    fprintf(f,"Section header string table index: %d\n",elf_h.e_shstrndx);
 
 }
 
