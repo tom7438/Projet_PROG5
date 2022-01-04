@@ -171,6 +171,48 @@
 #define R_386_GOTOFF    9
 #define R_386_GOTPC     10
 
+/** Machine **/
+#define EM_M32          1
+#define EM_SPARC        2
+#define EM_386          3
+#define EM_68K          4
+#define EM_88K          5
+#define EM_860          7
+#define EM_MIPS         8
+#define EM_MIPS_RS4_BE  10
+#define EM_PARISC       15
+#define EM_SPARC32PLUS  18
+#define EM_PPC          20
+#define EM_PPC64        21
+#define EM_S390         22
+#define EM_ARM          40
+#define EM_SH            42
+#define EM_SPARCV9        43
+#define EM_IA_64        50
+#define EM_X86_64       62
+#define EM_VAX            75
+
+/** EI OS/ABI **/
+#define EI_OSABI	7	/* Operating System/ABI indication */
+#define ELFOSABI_NONE	      0	/* UNIX System V ABI */
+#define ELFOSABI_SYSV	      0	/* UNIX System V ABI */
+#define ELFOSABI_HPUX	      1	/* HP-UX operating system */
+#define ELFOSABI_NETBSD	      2	/* NetBSD */
+#define ELFOSABI_LINUX	      3	/* GNU/Linux */
+#define ELFOSABI_HURD	      4	/* GNU/Hurd */
+#define ELFOSABI_SOLARIS      6	/* Solaris */
+#define ELFOSABI_AIX	      7	/* AIX */
+#define ELFOSABI_IRIX	      8	/* IRIX */
+#define ELFOSABI_FREEBSD      9	/* FreeBSD */
+#define ELFOSABI_TRU64	     10	/* TRU64 UNIX */
+#define ELFOSABI_MODESTO     11	/* Novell Modesto */
+#define ELFOSABI_OPENBSD     12	/* OpenBSD */
+#define ELFOSABI_OPENVMS     13	/* OpenVMS */
+#define ELFOSABI_NSK	     14	/* Hewlett-Packard Non-Stop Kernel */
+#define ELFOSABI_AROS	     15	/* Amiga Research OS */
+#define ELFOSABI_ARM	     97	/* ARM */
+#define ELFOSABI_STANDALONE 255	/* Standalone (embedded) application */
+
 typedef uint32_t Elf32_Addr;
 typedef uint32_t Elf32_Off;
 
@@ -239,19 +281,19 @@ typedef struct {
 	
 /* Etape 1 */
 /* readelf -h */
-void init_header(FILE *f, void * elf_h);
-void write_elf (FILE *f, void * elf_h);
+void init_header(FILE *f, Elf32 *elf_h);
+void write_elf (FILE *f, Elf32 elf_h);
 
 /* Etape 2 */
 /* readelf -S */
-void read_sections(FILE *f, void * elf_h, void ** arr_elf_SH);
-void read_section(FILE *f, void * elf_h, void * elf_SH);
-void print_sections_header(FILE *f, void ** arr_elf_SH);
-void print_section_header(FILE *f, void * elf_SH);
+void read_sections(FILE *f, Elf32 *elf_h, Elf32_SH **arr_elf_SH);
+void read_section(FILE *f, Elf32 *elf_h, Elf32_SH *elf_SH);
+void print_sections_header(FILE *f, Elf32_SH **arr_elf_SH);
+void print_section_header(FILE *f, Elf32_SH *elf_SH);
 
 /* Etape 3 */
 /* readelf -x num */
-void read_data_section(FILE *f, void * elf_SH);
-void print_data_section(FILE *f, void * elf_SH);
+void read_data_section(FILE *f, Elf32_SH *elf_SH);
+void print_data_section(FILE *f, Elf32_SH *elf_SH);
 
 #endif
