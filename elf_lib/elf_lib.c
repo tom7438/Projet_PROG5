@@ -87,7 +87,7 @@ void init_header(FILE *f, Elf32 * elf_h){
 void write_elf(FILE *f, Elf32 elf_h) {
     fprintf(f, "Magic Number : ");
     for(int k = 0; k < EI_NIDENT; k++){
-        fprintf(f, "%0.2x ",elf_h.e_ident[k]);
+        fprintf(f, "%.2x ",elf_h.e_ident[k]);
     }
 
     fprintf(f,"\n");
@@ -198,7 +198,7 @@ void write_elf(FILE *f, Elf32 elf_h) {
 
     fprintf(f,"Version:\t\t\t   %#x\n",elf_h.e_version);
 
-    fprintf(f,"Entry point address:\t\t   %#x\n",elf_h.e_entry);
+    fprintf(f,"Entry point address:\t\t   0x%x\n",elf_h.e_entry);
 
     fprintf(f,"Start of program headers:\t   %d (bytes into file)\n",elf_h.e_phoff);
 
