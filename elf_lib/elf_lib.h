@@ -37,7 +37,7 @@
 #define EV_CURRENT	    1
 
 
-/** e_type[] **/
+/** e_type **/
 #define ET_NONE         0
 #define ET_REL          1
 #define ET_EXEC         2
@@ -46,7 +46,7 @@
 #define ET_LOPROC       0xff00
 #define ET_HIPROC       0xffff
 
-/** e_machine[] **/
+/** e_machine **/
 /* #define ET_NONE      0 déjà défini dans le e_type */
 #define EM_M32          1
 #define EM_SPARC        2
@@ -56,6 +56,17 @@
 #define EM_860          7
 #define EM_MIPS         8
 #define EM_MIPS_RS4_BE  10
+#define EM_PARISC       15
+#define EM_SPARC32PLUS  18
+#define EM_PPC          20
+#define EM_PPC64        21
+#define EM_S390         22
+#define EM_ARM          40
+#define EM_SH           42
+#define EM_SPARCV9      43
+#define EM_IA_64        50
+#define EM_X86_64       62
+#define EM_VAX          75
 
 /** Special Section Indexes **/
 #define SHN_UNDEF	    0
@@ -281,6 +292,7 @@ typedef struct {
 } Elf64_SH;
 	
 /* Etape 1 */
+size_t bread(void *ptr, size_t s, size_t n, FILE *f);
 /* readelf -h */
 void init_header(FILE *f, Elf32 *elf_h);
 void write_elf (FILE *f, Elf32 elf_h);
