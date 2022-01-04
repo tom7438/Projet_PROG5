@@ -20,7 +20,7 @@ size_t bread(void *ptr, size_t s, size_t n, FILE *f) {
     } else {
         char buffer[s];
         char c;
-        
+
         for (int i = 0; i < s; i++) {
             c = fgetc(f);
             if (c == EOF) return 0;
@@ -29,7 +29,7 @@ size_t bread(void *ptr, size_t s, size_t n, FILE *f) {
 
         for (int i = s-1; i >= 0; i--) {
             *(int*)ptr++ = buffer[i];
-        }  
+        }
         return 1;
     }
 }
@@ -90,21 +90,21 @@ void write_elf(FILE *f, Elf32 elf_h) {
         fprintf(f, "%d ",elf_h.e_ident[k]);
         }
     fprintf(f,"\n");
-    
-    fprintf(f,"Class:\t\t\t");
+
+    fprintf(f,"Class:\t\t\t\t   ");
     if (elf_h.e_ident[EI_CLASS] == ELFCLASS32) fprintf(f,"ELF32\n");
     else fprintf(f,"None\n");
-    
-    fprintf(f,"Data:\t\t\t");
+
+    fprintf(f,"Data:\t\t\t\t   ");
     if (elf_h.e_ident[EI_DATA] == ELFDATA2LSB) fprintf(f, "2's complement, little endian\n");
     else if (elf_h.e_ident[EI_DATA] == ELFDATA2MSB) fprintf(f, "2's complement, big endian\n");
     else fprintf(f, "Unkonwn data format\n");
-    
-    fprintf(f,"Version:\t\t\t");
+
+    fprintf(f,"Version:\t\t\t   ");
     if (elf_h.e_ident[EI_VERSION] == EV_CURRENT) fprintf(f, "1 (current)\n");
     else fprintf(f,"0 (invalid)\n");
-    
-    fprintf(f,"OS/ABI:\t\t\t");
+
+    fprintf(f,"OS/ABI:\t\t\t\t   ");
     switch (elf_h.e_ident[EI_OSABI]) {
     case ELFOSABI_SYSV :
     fprintf(f,"UNIX - System V\n");break;
@@ -130,9 +130,9 @@ void write_elf(FILE *f, Elf32 elf_h) {
     fprintf(f,"Unknown OS/ABI\n");
     }
 
-    fprintf(f,"ABI Version:\t\t\t%d\n", elf_h.e_ident[EI_ABIVERSION]); //elf_h.e_ident[EI_ABIVERSION]
+    fprintf(f,"ABI Version:\t\t\t   0\n"); //elf_h.e_ident[EI_ABIVERSION]
 
-    fprintf(f,"Type:\t\t\t");
+    fprintf(f,"Type:\t\t\t\t   ");
     switch (elf_h.e_type){
     	case ET_NONE:
     	fprintf(f,"No file type\n");break;
@@ -151,7 +151,7 @@ void write_elf(FILE *f, Elf32 elf_h) {
 			fprintf(f,"Unknown type\n");
     }
 
-    fprintf(f,"Machine:\t\t\t");
+    fprintf(f,"Machine:\t\t\t   ");
     switch (elf_h.e_machine){
     	case EM_M32:
     	fprintf(f,"AT&T WE 32100\n");break;
@@ -195,29 +195,29 @@ void write_elf(FILE *f, Elf32 elf_h) {
     	fprintf(f,"%#x\n", elf_h.e_machine);break; //Affichage avec le 0x devant la veleur héxa
     }
 
-    fprintf(f,"Version:\t\t\t%#x\n",elf_h.e_version);
+    fprintf(f,"Version:\t\t\t   %#x\n",elf_h.e_version);
 
-    fprintf(f,"Entry point address:\t\t%#x\n",elf_h.e_entry);
+    fprintf(f,"Entry point address:\t\t   %#x\n",elf_h.e_entry);
 
-		fprintf(f,"Start of program headers:\t\t %d (bytes into file)\n",elf_h.e_phoff);
+		fprintf(f,"Start of program headers:\t   %d (bytes into file)\n",elf_h.e_phoff);
 
-		fprintf(f,"Start of section headers:\t\t %d (bytes into file)\n",elf_h.e_shoff);
+		fprintf(f,"Start of section headers:\t   %d (bytes into file)\n",elf_h.e_shoff);
 
-		fprintf(f,"Flags:\t\t\t %#x, Version5 EABI\n",elf_h.e_flags);
+		fprintf(f,"Flags:\t\t\t\t   %#x, Version5 EABI\n",elf_h.e_flags);
 
-		fprintf(f,"Size of this header:\t\t\t %d (bytes)\n",elf_h.e_ehsize);
+		fprintf(f,"Size of this header:\t\t   %d (bytes)\n",elf_h.e_ehsize);
 
-		fprintf(f,"Size of program headers:\t\t\t %d (bytes)\n",elf_h.e_phentsize);
+		fprintf(f,"Size of program headers:\t   %d (bytes)\n",elf_h.e_phentsize);
 
-		fprintf(f,"Number of program headers:\t\t\t %d\n",elf_h.e_phnum);
+		fprintf(f,"Number of program headers:\t   %d\n",elf_h.e_phnum);
 
-		fprintf(f,"Size of section headers:\t\t\t %d (bytes)\n",elf_h.e_shentsize);
+		fprintf(f,"Size of section headers:\t   %d (bytes)\n",elf_h.e_shentsize);
 
-		fprintf(f,"Number of section headers:\t\t\t %d\n",elf_h.e_shnum);
+		fprintf(f,"Number of section headers:\t   %d\n",elf_h.e_shnum);
 
-		fprintf(f,"Section header string table index:\t\t\t %u\n",elf_h.e_shstrndx);
+		fprintf(f,"Section header string table index: %d\n",elf_h.e_phnum);
 
-} 
+}
 
 /* Etape 2 */
 /* readelf -S */
