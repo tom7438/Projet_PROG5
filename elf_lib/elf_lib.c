@@ -8,50 +8,47 @@
 **/
 
 #include <stdlib.h>
+#include <string.h>
 #include "elf_lib/elf_lib.h"
 
 /* Étape 1 */
 void init_header(FILE *f, Elf32 * elf_h){
-	size_t tmp; //Pour stocker la valeur de retour de fread
-  unsigned char tab_e_ident[EI_NIDENT];
-  tmp=fread(tab_e_ident, sizeof(unsigned char), EI_NIDENT, f);
+    size_t tmp; //Pour stocker la valeur de retour de fread
+    unsigned char tab_e_ident[EI_NIDENT];
+    tmp=fread(tab_e_ident, sizeof(unsigned char), EI_NIDENT, f);
 
-   if (tab_e_ident[EI_MAG0] != ELFMAG0 || tab_e_ident[EI_MAG1] != ELFMAG1 || tab_e_ident[EI_MAG2] != ELFMAG2 || tab_e_ident[EI_MAG3] != ELFMAG3 || tab_e_ident[EI_CLASS]!=ELFCLASS32) {
-       fprintf(stderr, "Erreur, le fichier n'est pas au format ELF32\n");
-       exit(EXIT_FAILURE);
-   }
+    if (tab_e_ident[EI_MAG0] != ELFMAG0 || tab_e_ident[EI_MAG1] != ELFMAG1 || tab_e_ident[EI_MAG2] != ELFMAG2 || tab_e_ident[EI_MAG3] != ELFMAG3 || tab_e_ident[EI_CLASS]!=ELFCLASS32) {
+        fprintf(stderr, "Erreur, le fichier n'est pas au format ELF32\n");
+        exit(EXIT_FAILURE);
+    }
 
-   printf("%d", tab_e_ident[EI_CLASS]); //test
+    // copie de tab_e_ident dans elf_h->e_dient
+    memcpy(elf_h->e_ident, tab_e_ident, EI_NIDENT);
 
-	
-   Elf32 e; // malloc(sizeof(Elf32));
+    fread(&elf_h->e_type, 1, 1, f); // ca marche avec (?)
 
-   for(int i=0; i<EI_NIDENT ; i++){   //copie du tableau dans la structure de donee correspondante
-     e.e_ident[i]= tab_e_ident[i];
-   }
+    tmp=fread(&elf_h->e_type, sizeof(uint16_t), 1, f);
+    tmp=fread(&elf_h->e_machine, sizeof(uint16_t), 1, f);
+    tmp=fread(&elf_h->e_version, sizeof(uint32_t), 1, f);
+    tmp=fread(&elf_h->e_entry, sizeof(Elf32_Addr), 1, f);
+    tmp=fread(&elf_h->e_phoff, sizeof(Elf32_Off), 1, f);
+    tmp=fread(&elf_h->e_shoff, sizeof(Elf32_Off), 1, f);
+    tmp=fread(&elf_h->e_flags, sizeof(uint32_t), 1, f);
+    tmp=fread(&elf_h->e_ehsize, sizeof(uint16_t), 1, f);
+    tmp=fread(&elf_h->e_phentsize, sizeof(uint16_t), 1, f);
+    tmp=fread(&elf_h->e_phnum, sizeof(uint16_t), 1, f);
+    tmp=fread(&elf_h->e_shentsize, sizeof(uint16_t), 1, f);
+    tmp=fread(&elf_h->e_shnum, sizeof(uint16_t), 1, f);
+    tmp=fread(&elf_h->e_shstrndx, sizeof(uint16_t), 1, f);
 
-   tmp=fread(&e.e_type, sizeof(uint16_t), 1, f);
-   tmp=fread(&e.e_machine, sizeof(uint16_t), 1, f);
-   tmp=fread(&e.e_version, sizeof(uint32_t), 1, f);
-   tmp=fread(&e.e_entry, sizeof(Elf32_Addr), 1, f);
-   tmp=fread(&e.e_phoff, sizeof(Elf32_Off), 1, f);
-   tmp=fread(&e.e_shoff, sizeof(Elf32_Off), 1, f);
-   tmp=fread(&e.e_flags, sizeof(uint32_t), 1, f);
-   tmp=fread(&e.e_ehsize, sizeof(uint16_t), 1, f);
-   tmp=fread(&e.e_phentsize, sizeof(uint16_t), 1, f);
-   tmp=fread(&e.e_phnum, sizeof(uint16_t), 1, f);
-   tmp=fread(&e.e_shentsize, sizeof(uint16_t), 1, f);
-   tmp=fread(&e.e_shnum, sizeof(uint16_t), 1, f);
-   tmp=fread(&e.e_shstrndx, sizeof(uint16_t), 1, f);
-
-   fprintf(stdout,"Valeur de retour du dernier fread = %lu\n", tmp); //Test
+    fprintf(stdout,"Valeur de retour du dernier fread = %lu\n", tmp); //Test
 
 }
 
 void write_elf(FILE *f, Elf32 elf_h) {
     fprintf(f, "Magic Number : ");
     for(int k = 0; k < EI_NIDENT; k++){
-        fprintf(f, "%x ",elf_h.e_ident[k]);
+        fprintf(f, "%d ",elf_h.e_ident[k]);
         }
     fprintf(f,"\n");
     
@@ -94,7 +91,7 @@ void write_elf(FILE *f, Elf32 elf_h) {
     fprintf(f,"Unknown OS/ABI\n");
     }
 
-    fprintf(f,"ABI Version:\t\t\t0"); //elf_h.e_ident[EI_ABIVERSION]
+    fprintf(f,"ABI Version:\t\t\t0\n"); //elf_h.e_ident[EI_ABIVERSION]
 
     fprintf(f,"Type:\t\t\t");
     switch (elf_h.e_type){
