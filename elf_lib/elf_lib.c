@@ -138,7 +138,7 @@ void write_elf(FILE *f, Elf32 elf_h) {
     	case ET_NONE:
     	    fprintf(f,"No file type\n");break;
     	case ET_REL:
-			fprintf(f,"REL (Relocatable file)\n");break;
+            fprintf(f,"REL (Relocatable file)\n");break;
         case ET_EXEC:
             fprintf(f,"EXEC (Executable file)\n");break;
         case ET_DYN:
