@@ -12,48 +12,75 @@
 #include <assert.h>
 #include "elf_lib/elf_lib.h"
 
+int big = 0;
+
+size_t bread(void *ptr, size_t s, size_t n, FILE *f) {
+    if(big == 0) {
+        return fread(ptr, s, n, f);
+    } else {
+        char buffer[s];
+        char c;
+        
+        for (int i = 0; i < s; i++) {
+            c = fgetc(f);
+            if (c == EOF) return 0;
+            buffer[i] = c;
+        }
+
+        for (int i = s-1; i >= 0; i--) {
+            *(int*)ptr++ = buffer[i];
+        }  
+        return 1;
+    }
+}
+
 /* Étape 1 */
 void init_header(FILE *f, Elf32 * elf_h){
-    size_t tmp; //Pour stocker la valeur de retour de fread
-    
+    size_t tmp; // pour la valeur de retour de fread
+
+    // ---
     unsigned char tab_e_ident[EI_NIDENT];
-    tmp = fread(tab_e_ident, sizeof(unsigned char), EI_NIDENT, f);
+    tmp = fread(&tab_e_ident, EI_NIDENT, 1, f);
+    assert(tmp);
 
     if (tab_e_ident[EI_MAG0] != ELFMAG0 || tab_e_ident[EI_MAG1] != ELFMAG1 || tab_e_ident[EI_MAG2] != ELFMAG2 || tab_e_ident[EI_MAG3] != ELFMAG3 || tab_e_ident[EI_CLASS]!=ELFCLASS32) {
         fprintf(stderr, "Erreur, le fichier n'est pas au format ELF32\n");
         exit(EXIT_FAILURE);
     }
 
+    // si on a du big endian!!
+    if (elf_h->e_ident[EI_DATA] == ELFDATA2MSB) {
+        big = 1;
+    }
+
     // copie de tab_e_ident dans elf_h->e_dient
     memcpy(elf_h->e_ident, tab_e_ident, EI_NIDENT);
 
-    fread(&elf_h->e_type, 1, 1, f); // ca marche avec (?)
-
-    tmp = fread(&elf_h->e_type, sizeof(uint16_t), 1, f);
+    tmp = bread(&elf_h->e_type, sizeof(uint16_t), 1, f);
     assert(tmp);
-    tmp = fread(&elf_h->e_machine, sizeof(uint16_t), 1, f);
+    tmp = bread(&elf_h->e_machine, sizeof(uint16_t), 1, f);
     assert(tmp);
-    tmp = fread(&elf_h->e_version, sizeof(uint32_t), 1, f);
+    tmp = bread(&elf_h->e_version, sizeof(uint32_t), 1, f);
     assert(tmp);
-    tmp = fread(&elf_h->e_entry, sizeof(Elf32_Addr), 1, f);
+    tmp = bread(&elf_h->e_entry, sizeof(Elf32_Addr), 1, f);
     assert(tmp);
-    tmp = fread(&elf_h->e_phoff, sizeof(Elf32_Off), 1, f);
+    tmp = bread(&elf_h->e_phoff, sizeof(Elf32_Off), 1, f);
     assert(tmp);
-    tmp = fread(&elf_h->e_shoff, sizeof(Elf32_Off), 1, f);
+    tmp = bread(&elf_h->e_shoff, sizeof(Elf32_Off), 1, f);
     assert(tmp);
-    tmp = fread(&elf_h->e_flags, sizeof(uint32_t), 1, f);
+    tmp = bread(&elf_h->e_flags, sizeof(uint32_t), 1, f);
     assert(tmp);
-    tmp = fread(&elf_h->e_ehsize, sizeof(uint16_t), 1, f);
+    tmp = bread(&elf_h->e_ehsize, sizeof(uint16_t), 1, f);
     assert(tmp);
-    tmp = fread(&elf_h->e_phentsize, sizeof(uint16_t), 1, f);
+    tmp = bread(&elf_h->e_phentsize, sizeof(uint16_t), 1, f);
     assert(tmp);
-    tmp = fread(&elf_h->e_phnum, sizeof(uint16_t), 1, f);
+    tmp = bread(&elf_h->e_phnum, sizeof(uint16_t), 1, f);
     assert(tmp);
-    tmp = fread(&elf_h->e_shentsize, sizeof(uint16_t), 1, f);
+    tmp = bread(&elf_h->e_shentsize, sizeof(uint16_t), 1, f);
     assert(tmp);
-    tmp = fread(&elf_h->e_shnum, sizeof(uint16_t), 1, f);
+    tmp = bread(&elf_h->e_shnum, sizeof(uint16_t), 1, f);
     assert(tmp);
-    tmp = fread(&elf_h->e_shstrndx, sizeof(uint16_t), 1, f);
+    tmp = bread(&elf_h->e_shstrndx, sizeof(uint16_t), 1, f);
     assert(tmp);
 }
 
@@ -103,7 +130,7 @@ void write_elf(FILE *f, Elf32 elf_h) {
     fprintf(f,"Unknown OS/ABI\n");
     }
 
-    fprintf(f,"ABI Version:\t\t\t0\n"); //elf_h.e_ident[EI_ABIVERSION]
+    fprintf(f,"ABI Version:\t\t\t%d\n", elf_h.e_ident[EI_ABIVERSION]); //elf_h.e_ident[EI_ABIVERSION]
 
     fprintf(f,"Type:\t\t\t");
     switch (elf_h.e_type){
@@ -188,7 +215,7 @@ void write_elf(FILE *f, Elf32 elf_h) {
 
 		fprintf(f,"Number of section headers:\t\t\t %d\n",elf_h.e_shnum);
 
-		fprintf(f,"Section header string table index:\t\t\t %d\n",elf_h.e_phnum);
+		fprintf(f,"Section header string table index:\t\t\t %u\n",elf_h.e_shstrndx);
 
 } 
 

@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
             case 'h':
                 /** ici on devrait afficher le header du fichier ELF donné en argument **/
                 printf("Fichier: %s\n", optarg);
-                FILE *f = fopen(optarg, "r");
+                FILE *f = fopen(optarg, "rb");
 
                 if (f == NULL) exit(1);
 

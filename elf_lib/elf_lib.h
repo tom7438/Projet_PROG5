@@ -8,10 +8,12 @@
 #define	EI_MAG1		    1
 #define	EI_MAG2		    2
 #define	EI_MAG3		    3
-#define	EI_CLASS	    4
+#define	EI_CLASS        4
 #define	EI_DATA		    5
 #define	EI_VERSION	    6
-#define	EI_PAD		    8
+#define  EI_OSABI        7
+#define  EI_ABIVERSION   8
+#define	EI_PAD		    9
 #define EI_NIDENT       16
 
 /* EI_MAG */
@@ -193,7 +195,6 @@
 #define EM_VAX            75
 
 /** EI OS/ABI **/
-#define EI_OSABI	7	/* Operating System/ABI indication */
 #define ELFOSABI_NONE	      0	/* UNIX System V ABI */
 #define ELFOSABI_SYSV	      0	/* UNIX System V ABI */
 #define ELFOSABI_HPUX	      1	/* HP-UX operating system */
