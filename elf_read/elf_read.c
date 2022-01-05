@@ -133,16 +133,15 @@ int main(int argc, char *argv[]) {
             Elf32_Sym symbols[SH_TABLE_MAX];
             size_t nbSymboles;
             read_symbol_section(f, header, sections, symbols, &nbSymboles);
-            int k;
-            int strtab=0;
-            for (k=0; k < header.e_shnum; k++){
-        		if(sections[k].sh_type == SHT_STRTAB){
-        			strtab++;
-            		break;
-        		}
-    		}
-            print_symbols(stdout, header, sections[k], nbSymboles, symbols);
-            fprintf(stdout,"strtab = %d\n", strtab); // Vérifie si strtab a bien été trouvée
+
+            int strtab = -1;
+            for (int k=0; k < header.e_shnum; k++){
+                if(sections[k].sh_type == SHT_STRTAB){
+                    strtab = k;
+                    break;
+                }
+            }
+            if (strtab > -1) print_symbols(f, stdout, header, sections[strtab], nbSymboles, symbols);
         }
 
         if (showRelocs) {
