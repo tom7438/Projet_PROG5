@@ -34,16 +34,17 @@ int main(int argc, char *argv[]) {
 		{ "header", no_argument, NULL, 'h' },
 		{ "sections", no_argument, NULL, 'S' },
 		{ "section", required_argument, NULL, 'x' },
+		{ "symbols", no_argument, NULL, 's' },
 		{ "relocations", required_argument, NULL, 'r' },
 		{ "help", no_argument, NULL, 'H' },
 		{ NULL, 0, NULL, 0 }
 	};
 
     char *ELF_filename;
-    int showHeader = 0, showSectionsH = 0;
+    int showHeader = 0, showSectionsH = 0, showSymbolTable = 0;
 
     /* à compléter */
-    while ((opt = getopt_long(argc, argv, "hSx:r:H", longopts, NULL)) != -1) {
+    while ((opt = getopt_long(argc, argv, "hSsx:r:H", longopts, NULL)) != -1) {
 		switch(opt) {
             case 'h': {
                 showHeader = 1;
@@ -58,6 +59,10 @@ int main(int argc, char *argv[]) {
                     sectionsAAfficher[sectionsAAfficher_s] = optarg;
                     sectionsAAfficher_s++;
                 }
+                break;
+            }
+            case 's': {
+                showSymbolTable = 1;
                 break;
             }
             case 'r':
@@ -123,6 +128,12 @@ int main(int argc, char *argv[]) {
                 }
                 printf("\n");
             }
+        }
+
+        if (showSymbolTable) {
+            Elf32_Sym symbols[SH_TABLE_MAX];
+            read_symbol_section(f, &header, sections, symbols);
+            print_symbols_header(f, symbols); 
         }
     }
 

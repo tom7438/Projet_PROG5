@@ -321,7 +321,6 @@ void read_symbol_section(FILE *f, Elf32 *elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym 
     for (i=0; i<taille; i++){
         if(arr_elf_SH[i].sh_type==SHT_SYMTAB){
             printf("The symbol table is found\n");
-            
             break;
         }
     }
