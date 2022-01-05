@@ -114,7 +114,7 @@ ARM_runner_example_LDADD = $(LDADD)
 ARM_runner_example_DEPENDENCIES =
 am__dirstamp = $(am__leading_dot)dirstamp
 am_read_elf_OBJECTS = elf_lib/elf_lib.$(OBJEXT) \
-	elf_read/elf_read.$(OBJEXT)
+	elf_lib/elf_utils.$(OBJEXT) elf_read/elf_read.$(OBJEXT)
 read_elf_OBJECTS = $(am_read_elf_OBJECTS)
 read_elf_LDADD = $(LDADD)
 read_elf_DEPENDENCIES =
@@ -137,7 +137,8 @@ am__depfiles_remade = ./$(DEPDIR)/ARM_runner_example.Po \
 	./$(DEPDIR)/arm_simulator_interface.Po ./$(DEPDIR)/csapp.Po \
 	./$(DEPDIR)/debug.Po ./$(DEPDIR)/gdb_protocol.Po \
 	./$(DEPDIR)/scanner.Po ./$(DEPDIR)/util.Po \
-	elf_lib/$(DEPDIR)/elf_lib.Po elf_read/$(DEPDIR)/elf_read.Po
+	elf_lib/$(DEPDIR)/elf_lib.Po elf_lib/$(DEPDIR)/elf_utils.Po \
+	elf_read/$(DEPDIR)/elf_read.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -364,7 +365,7 @@ AM_CFLAGS = -Wall -Werror -g -D DEBUG -D WARNING -D \
 LDADD = -lpthread
 AUTOMAKE_OPTIONS = subdir-objects
 SUBDIRS = . Examples_loader
-read_elf_SOURCES = elf_lib/elf_lib.h elf_lib/elf_lib.c elf_read/elf_read.c
+read_elf_SOURCES = elf_lib/elf_lib.h elf_lib/elf_lib.c elf_lib/elf_utils.h elf_lib/elf_utils.c elf_read/elf_read.c
 COMMON = debug.h debug.c util.h util.c
 EXTRA_DIST = filtre.pl sample_run.sh
 SIMULATOR_INTERFACE = csapp.h csapp.c scanner.h scanner.l gdb_protocol.h gdb_protocol.c arm_simulator_interface.h arm_simulator_interface.c
@@ -460,6 +461,8 @@ elf_lib/$(DEPDIR)/$(am__dirstamp):
 	@: > elf_lib/$(DEPDIR)/$(am__dirstamp)
 elf_lib/elf_lib.$(OBJEXT): elf_lib/$(am__dirstamp) \
 	elf_lib/$(DEPDIR)/$(am__dirstamp)
+elf_lib/elf_utils.$(OBJEXT): elf_lib/$(am__dirstamp) \
+	elf_lib/$(DEPDIR)/$(am__dirstamp)
 elf_read/$(am__dirstamp):
 	@$(MKDIR_P) elf_read
 	@: > elf_read/$(am__dirstamp)
@@ -489,6 +492,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scanner.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@elf_lib/$(DEPDIR)/elf_lib.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@elf_lib/$(DEPDIR)/elf_utils.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@elf_read/$(DEPDIR)/elf_read.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
@@ -875,6 +879,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/scanner.Po
 	-rm -f ./$(DEPDIR)/util.Po
 	-rm -f elf_lib/$(DEPDIR)/elf_lib.Po
+	-rm -f elf_lib/$(DEPDIR)/elf_utils.Po
 	-rm -f elf_read/$(DEPDIR)/elf_read.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
@@ -931,6 +936,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/scanner.Po
 	-rm -f ./$(DEPDIR)/util.Po
 	-rm -f elf_lib/$(DEPDIR)/elf_lib.Po
+	-rm -f elf_lib/$(DEPDIR)/elf_utils.Po
 	-rm -f elf_read/$(DEPDIR)/elf_read.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic

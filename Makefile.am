@@ -17,7 +17,7 @@ SUBDIRS+=. Examples_loader
 
 bin_PROGRAMS=
 bin_PROGRAMS+=ARM_runner_example read_elf
-read_elf_SOURCES=elf_lib/elf_lib.h elf_lib/elf_lib.c elf_read/elf_read.c
+read_elf_SOURCES=elf_lib/elf_lib.h elf_lib/elf_lib.c elf_lib/elf_utils.h elf_lib/elf_utils.c elf_read/elf_read.c
 
 
 COMMON=debug.h debug.c util.h util.c
