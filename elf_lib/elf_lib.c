@@ -15,7 +15,7 @@
 
 /**
  * @brief Initialise et retourne l'en-tête du fichier ELF
- * 
+ *
  * @param f flux
  * @param elf_h pointeur en-tête ELF
  * @return en-tête ELF dans le pointeur spécifié
@@ -72,12 +72,13 @@ void init_header(FILE *f, Elf32 * elf_h){
 /**
  * @brief Affiche dans la sortie spécifiée les
  *        informations de l'en-tête ELF
- * 
+ *
  * @param f flux
  * @param elf_h en-tête ELF
  */
 void write_elf(FILE *f, Elf32 elf_h) {
-    fprintf(f, "Magic Number : ");
+    fprintf(f, "ELF Header:\n ");
+    fprintf(f, "Magic: ");
     for(int k = 0; k < EI_NIDENT; k++){
         fprintf(f, "%.2x ",elf_h.e_ident[k]);
     }
@@ -140,7 +141,7 @@ void write_elf(FILE *f, Elf32 elf_h) {
     	case EM_PPC: fprintf(f,"PowerPC\n"); break;
     	case EM_PPC64: fprintf(f,"64-bit PowerPC\n"); break;
     	case EM_S390: fprintf(f,"IBM System/390 Processor\n"); break;
-    	case EM_ARM: fprintf(f,"Advanced RISC Machines ARM\n"); break;
+    	case EM_ARM: fprintf(f,"ARM\n"); break;
     	case EM_SH: fprintf(f,"Hitachi SH\n"); break;
     	case EM_SPARCV9: fprintf(f,"SPARC Version 9\n"); break;
     	case EM_IA_64: fprintf(f,"Intel IA-64 processor architecture\n"); break;
@@ -153,7 +154,7 @@ void write_elf(FILE *f, Elf32 elf_h) {
     fprintf(f,"Entry point address:\t\t   0x%x\n",elf_h.e_entry);
     fprintf(f,"Start of program headers:\t   %d (bytes into file)\n",elf_h.e_phoff);
     fprintf(f,"Start of section headers:\t   %d (bytes into file)\n",elf_h.e_shoff);
-    fprintf(f,"Flags:\t\t\t\t   %#x, Version5 EABI\n",elf_h.e_flags);
+    fprintf(f,"Flags:\t\t\t\t   %#x, Version5 EABI, soft-float ABI\n",elf_h.e_flags);
     fprintf(f,"Size of this header:\t\t   %d (bytes)\n",elf_h.e_ehsize);
     fprintf(f,"Size of program headers:\t   %d (bytes)\n",elf_h.e_phentsize);
     fprintf(f,"Number of program headers:\t   %d\n",elf_h.e_phnum);
@@ -165,7 +166,7 @@ void write_elf(FILE *f, Elf32 elf_h) {
 /**
  * @brief Lit les en-têtes section ELF et les retournes
  *        dans un tableau
- * 
+ *
  * @param f flux
  * @param elf_h en-tête ELF
  * @param arr_elf_SH tableau d'en-têtes section
@@ -192,15 +193,15 @@ void read_sections(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH) {
 
 /**
  * @brief Affiche dans le flux spécifié les
- *        en-tête des sections ELF 
- * 
+ *        en-tête des sections ELF
+ *
  * @param f flux
  * @param fout flux de sorite
  * @param elf_h en-tête ELF
  * @param arr_elf_SH tableau d'en-têtes section
  */
 void print_sections_header(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH) {
-    
+
     fprintf(fout, "Section Headers (%d), starting at offset 0x%X:\n", elf_h.e_shnum, elf_h.e_shoff);
     fprintf(fout, " [Nr]\tName\t\t\tType\t\tAddr\tOff\tSize\tES\tFlg\tLk\tInf\tAl");
     fprintf(fout, "\n");
@@ -256,12 +257,12 @@ void print_sections_header(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_S
     fprintf(fout, "\n Key to Flags:\n");
     fprintf(fout, "\tW (write), A (alloc), X (execute), M (merge), S (strings), I (info),\n");
     fprintf(fout, "\tL (link order), O (extra OS processing required), G (group), T (TLS)\n");
-} 
+}
 
 /**
  * @brief Retourne dans le flux de sortie, le contenu en héxadecimal
  *        de la section spécifiée en argument, depuis le flux spécifié
- * 
+ *
  * @param f flux
  * @param fout flux de sortie
  * @param elf_h en-tête EFL
@@ -270,7 +271,7 @@ void print_sections_header(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_S
  */
 void read_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_SH *elf_SH) {
     fseek(f, elf_SH->sh_offset, SEEK_SET);
-    
+
     for (int i = 0; i < elf_SH->sh_size; i++) {
         if (i%4 == 0) fprintf(fout, " ");
         if (i%16 == 0) fprintf(fout, "\n0x%08x ", i);
@@ -279,9 +280,9 @@ void read_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, E
 }
 
 /**
- * @brief Affiche le contenu en héxadecimal de la section 
+ * @brief Affiche le contenu en héxadecimal de la section
  *        spécifiée en argument
- * 
+ *
  * @param f flux
  * @param fout flux de sortie
  * @param elf_h en-tête EFL
@@ -314,7 +315,7 @@ void read_symbol_section(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *
 
     if (found == 0) exit(1);
     fseek(f, arr_elf_SH[i].sh_offset, SEEK_SET);
-    
+
     Elf32_Sym elf_SYM;
     int j = 0;
     for (j = 0; j < arr_elf_SH[i].sh_size/sizeof(Elf32_Sym); j++){
@@ -379,8 +380,8 @@ void print_symbol(FILE *f, Elf32_Sym elf_SYM) {
 		default :
 		fprintf(f,"\t  %d",elf_SYM.st_shndx);break;
 	}
-	
-	
+
+
 
 	fprintf(f, "\n");
 }
@@ -418,14 +419,14 @@ void read_reloca(FILE *f, Elf32_Rela *elf_RELA, int soff) {
 
 /* appelle read_reloc et read_reloca pour stocker chaque relocations dans leurs tableaux respectifs */
 void read_relocsa(FILE *f, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t *nbRel, size_t *nbRela) {
-    /** 
+    /**
      * TODO: fonction read_relocsa
-     * les relocations & "rela" se trouvent dans les sections de type respectifs SHT_REL & SHT_RELA 
-     * il faut donc lire ttes les sections et traiter uniquement celle de type SHT_REL & SHT_RELA 
-     * puis ensuite appeler read_reloc ou read_reloc selon si on a un SHT_REL ou SHT_RELA 
-     * 
+     * les relocations & "rela" se trouvent dans les sections de type respectifs SHT_REL & SHT_RELA
+     * il faut donc lire ttes les sections et traiter uniquement celle de type SHT_REL & SHT_RELA
+     * puis ensuite appeler read_reloc ou read_reloc selon si on a un SHT_REL ou SHT_RELA
+     *
      * ces deux fonctions (read_reloc/read_reloc) prennent un argument "soff" qui correspond au décalage
-     * depuis le début du fichier. Normalement cet argument correspond au sh_offset de la section en cours 
+     * depuis le début du fichier. Normalement cet argument correspond au sh_offset de la section en cours
      * de traitement et il faut ensuite retourner le resultat de ces fonctions dans leurs tableaux respectifs:
      *     - arr_elf_REL pour un SHT_REL, et arr_elf_RELA pour un SHT_RELA
      */
@@ -436,17 +437,17 @@ void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Rel *arr_elf
     /**
      * TODO: fonction print_relocs
      * Ici on affiche donc les REL et RELA de taille nbRel et nbRela.
-     * 
+     *
      * INFO à afficher:
      *      - pour REL:
      *                  Offset, Info, Type (à recupérer depuis r_info), IndexSym (afficher juste l'index du symbole)
      *      - pour RELA:
      *                  Offset, Info, Type (à recupérer depuis r_info), IndexSym (afficher juste l'index du symbole), Addend
-     *          
+     *
      * INFO: voir doc (p. 36, paragraphe sur "r_info") pour obtenir les infos depuis r_info (index de la table de symbole & type de relocation)
      *       NOTE: possible qu'il y ait donc besoin de la table des symboles en argument (voir affichage de readelf -r)
      *             --> l'ajouter si le cas!!
      *      - essayez d'afficher au moins le nom du symbole avec l'index de celui-ci, avec la fonction read_name_from_STable() ca doit être faisable
-     * 
+     *
      */
 }
