@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
     /* à compléter */
     while ((opt = getopt_long(argc, argv, "h:S:r:H", longopts, NULL)) != -1) {
 		switch(opt) {
-            case 'h':
+            case 'h': {
                 /** ici on devrait afficher le header du fichier ELF donné en argument **/
                 printf("Fichier: %s\n", optarg);
                 FILE *f = fopen(optarg, "rb");
@@ -48,11 +48,22 @@ int main(int argc, char *argv[]) {
                 init_header(f, &header);
                 write_elf(stdout, header);
                 break;
-            case 'S':
+            }
+            case 'S': {
                 /** ici on devrait afficher les sections du fichier ELF donné en argument **/
                 printf("Fichier: %s\n", optarg);
-                /* à compléter */
+                FILE *f = fopen(optarg, "rb");
+
+                if (f == NULL) exit(1);
+
+                Elf32 header;
+                Elf32_SH sections[SH_TABLE_MAX];
+
+                init_header(f, &header);
+                read_sections(f, header, sections);
+                print_sections_header(f, header, sections);
                 break;
+            }
             case 'r':
                 /** ici on devrait afficher les rellocations du fichier ELF donné en argument **/
                 printf("Fichier: %s\n", optarg);
