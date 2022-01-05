@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 	};
 
     char *ELF_filename;
-    int showHeader = 0, showSectionsH = 0, showSymbolTable = 0;
+    int showHeader = 0, showSectionsH = 0, showSymbolTable = 0, showRelocs = 0;
 
     /* à compléter */
     while ((opt = getopt_long(argc, argv, "hSsx:r:H", longopts, NULL)) != -1) {
@@ -66,9 +66,7 @@ int main(int argc, char *argv[]) {
                 break;
             }
             case 'r':
-                /** ici on devrait afficher les rellocations du fichier ELF donné en argument **/
-                printf("Fichier: %s\n", optarg);
-                /* à compléter */
+                showRelocs = 1;
                 break;
             case 'H':
                 usage(argv[0]);
@@ -133,9 +131,19 @@ int main(int argc, char *argv[]) {
         if (showSymbolTable) {
             Elf32_Sym symbols[SH_TABLE_MAX];
             size_t nbSymboles;
-            read_symbol_section(f, &header, sections, symbols, &nbSymboles);
+            read_symbol_section(f, header, sections, symbols, &nbSymboles);
             print_symbols(stdout, nbSymboles, symbols); 
         }
+
+        if (showRelocs) {
+            Elf32_Rel relocations[SH_TABLE_MAX];
+            Elf32_Rela rela[SH_TABLE_MAX];
+            size_t nbRelocs;
+            size_t nbRela;
+            read_relocsa(f, relocations, rela, &nbRelocs, &nbRela);
+            print_relocs(f, header, sections, relocations, rela, nbRelocs, nbRela);
+        }
+        
     }
 
 }
