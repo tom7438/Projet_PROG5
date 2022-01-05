@@ -35,16 +35,16 @@ int main(int argc, char *argv[]) {
 		{ "sections", no_argument, NULL, 'S' },
 		{ "section", required_argument, NULL, 'x' },
 		{ "symbols", no_argument, NULL, 's' },
-		{ "relocations", required_argument, NULL, 'r' },
+		{ "relocations", no_argument, NULL, 'r' },
 		{ "help", no_argument, NULL, 'H' },
 		{ NULL, 0, NULL, 0 }
 	};
 
     char *ELF_filename;
-    int showHeader = 0, showSectionsH = 0, showSymbolTable = 0;
+    int showHeader = 0, showSectionsH = 0, showSymbolTable = 0, showRelocs = 0;
 
     /* à compléter */
-    while ((opt = getopt_long(argc, argv, "hSsx:r:H", longopts, NULL)) != -1) {
+    while ((opt = getopt_long(argc, argv, "hSsrx:H", longopts, NULL)) != -1) {
 		switch(opt) {
             case 'h': {
                 showHeader = 1;
@@ -65,11 +65,10 @@ int main(int argc, char *argv[]) {
                 showSymbolTable = 1;
                 break;
             }
-            case 'r':
-                /** ici on devrait afficher les rellocations du fichier ELF donné en argument **/
-                printf("Fichier: %s\n", optarg);
-                /* à compléter */
+            case 'r': {
+                showRelocs = 1;
                 break;
+            }
             case 'H':
                 usage(argv[0]);
                 exit(0);
@@ -132,9 +131,20 @@ int main(int argc, char *argv[]) {
 
         if (showSymbolTable) {
             Elf32_Sym symbols[SH_TABLE_MAX];
-            read_symbol_section(f, &header, sections, symbols);
-            print_symbols_header(stdout, symbols); 
+            size_t nbSymboles;
+            read_symbol_section(f, header, sections, symbols, &nbSymboles);
+            print_symbols(stdout, nbSymboles, symbols); 
         }
+
+        if (showRelocs) {
+            Elf32_Rel relocations[SH_TABLE_MAX];
+            Elf32_Rela rela[SH_TABLE_MAX];
+            size_t nbRelocs;
+            size_t nbRela;
+            read_relocsa(f, relocations, rela, &nbRelocs, &nbRela);
+            print_relocs(f, header, sections, relocations, rela, nbRelocs, nbRela);
+        }
+        
     }
 
 }

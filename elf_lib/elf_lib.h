@@ -77,7 +77,7 @@
 #define SHN_COMMON	    0xfff2
 #define SHN_HIRESERVE	0xffff
 
-/**  sh_type[] **/
+/**  sh_type **/
 #define SHT_NULL	    0
 #define SHT_PROGBITS	1
 #define SHT_SYMTAB	    2
@@ -96,7 +96,7 @@
 #define SHT_HIUSER	    0xffffffff
 #define SHT_ARM_ATTRIBUTES 0x70000003
 
-/** sh_flags[] **/
+/** sh_flags **/
 #define SHF_WRITE		         0x1
 #define SHF_ALLOC	            0x2
 #define SHF_EXECINSTR	      0x4
@@ -131,7 +131,7 @@
 #define STT_LOPROC      13
 #define STT_HIPROC      15
 
-/* p_type[] */
+/* p_type */
 #define PT_NULL         0
 #define PT_LOAD         1
 #define PT_DYNAMIC      2
@@ -142,13 +142,13 @@
 #define PT_LOPROC       0x70000000
 #define PT_HIPROC       0x7fffffff
 
-/** p_flags[] **/
+/** p_flags **/
 #define PF_X		    0x1
 #define PF_W		    0x2
 #define PF_R		    0x4
 #define PF_MASKPROC     0xf0000000
 
-/** d_tag[] **/
+/** d_tag **/
 #define DT_NULL		    0
 #define DT_NEEDED	    1
 #define DT_PLTRELSZ	    2
@@ -299,7 +299,6 @@ typedef struct {
    uint64_t   sh_entsize;
 } Elf64_SH;
 
-
 typedef struct {
     uint32_t      st_name;
     Elf32_Addr    st_value;
@@ -311,13 +310,23 @@ typedef struct {
 
 typedef struct {
     uint32_t      st_name;
+    Elf64_Addr    st_value;
+    uint64_t      st_size;
     unsigned char st_info;
     unsigned char st_other;
     uint16_t      st_shndx;
-    Elf64_Addr    st_value;
-    uint64_t      st_size;
 } Elf64_Sym;
 
+typedef struct {
+   Elf32_Addr    r_offset;
+   uint32_t    r_info;
+} Elf32_Rel; 
+
+typedef struct {
+   Elf32_Addr    r_offset;
+   uint32_t    r_info;
+   int32_t   r_addend;
+} Elf32_Rela;
 
 /* Etape 1 */
 void init_header(FILE *f, Elf32 *elf_h);
@@ -333,11 +342,19 @@ void print_sections_header(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_S
 void read_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_SH *elf_SH);
 void print_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_SH *elf_SH);
 
-
 /* Etape 4 */
 /* readelf -s */
-void read_symbol_section(FILE *f, Elf32 *elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM);
-void print_symbol_header(FILE *f, Elf32_Sym elf_SYM);
-void print_symbols_header(FILE *f, Elf32_Sym * arr_elf_SYM);
+void read_symbol_section(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, size_t *nbSymboles);
+void print_symbol(FILE *f, Elf32_Sym elf_SYM);
+void print_symbols(FILE *f, size_t nbSymboles, Elf32_Sym * arr_elf_SYM);
+
+/* Etape 5 */
+/* readelf -r */
+void read_reloc(FILE *f, Elf32_Rel *elf_REL, int soff); /* lit un reloc */
+void read_reloca(FILE *f, Elf32_Rela *elf_RELA, int soff); /* lit un rela */
+/* appelle read_reloc et read_reloca pour stocker chaque relocations dans leurs tableaux respectifs */
+void read_relocsa(FILE *f, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t *nbRel, size_t *nbRela);
+/* affichage de chaque relocs et reloca */
+void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t nbRel, size_t nbRela);
 
 #endif

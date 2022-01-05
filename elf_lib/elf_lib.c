@@ -300,64 +300,132 @@ void print_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, 
 
 /*  Etape 4 */
 
-/*
-typedef struct {
-    uint32_t      st_name;
-    Elf32_Addr    st_value;
-    uint32_t      st_size;
-    unsigned char st_info;
-    unsigned char st_other;
-    uint16_t      st_shndx;
-} Elf32_SYM;
-*/
-
 /* Elf32 *elf récupéré dans l'étape 1 et Elf32_SH * arr_elf_SH récupéré à l'étape 2 */
-void read_symbol_section(FILE *f, Elf32 *elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM){
-
+void read_symbol_section(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, size_t *nbSymboles){
     int i;
     int found = 0;
-    for (i=0; i<elf_h->e_shnum; i++){
+    for (i=0; i < elf_h.e_shnum; i++){
         if(arr_elf_SH[i].sh_type == SHT_SYMTAB){
             found = 1;
             break;
         }
     }
     // si pas de .symtab, erreur
+
     if (found == 0) exit(1);
-  
     fseek(f, arr_elf_SH[i].sh_offset, SEEK_SET);
+    
     Elf32_Sym elf_SYM;
-    for (int j=0; j<arr_elf_SH[i].sh_size/sizeof(Elf32_Sym); j++){
-        bread(&elf_SYM.st_name,sizeof(uint32_t),1,f);
-        bread(&elf_SYM.st_value,sizeof(Elf32_Addr),1,f);
-        bread(&elf_SYM.st_size,sizeof(uint32_t),1,f);
-        bread(&elf_SYM.st_info,sizeof(unsigned char),1,f);
-        bread(&elf_SYM.st_other,sizeof(unsigned char),1,f);
-        bread(&elf_SYM.st_shndx,sizeof(uint16_t),1,f);
+    int j = 0;
+    for (j = 0; j < arr_elf_SH[i].sh_size/sizeof(Elf32_Sym); j++){
+        bread(&elf_SYM.st_name, sizeof(uint32_t), 1, f);
+        bread(&elf_SYM.st_value, sizeof(Elf32_Addr), 1, f);
+        bread(&elf_SYM.st_size, sizeof(uint32_t), 1, f);
+        bread(&elf_SYM.st_info, sizeof(unsigned char), 1, f);
+        bread(&elf_SYM.st_other, sizeof(unsigned char), 1, f);
+        bread(&elf_SYM.st_shndx, sizeof(uint16_t), 1, f);
         arr_elf_SYM[j]=elf_SYM;
     }
+    *nbSymboles = j-1;
 }
 
-void print_symbol_header(FILE *f, Elf32_Sym elf_SYM) {
-	fprintf(f," %08x",elf_SYM.st_value);
+void print_symbol(FILE *f, Elf32_Sym elf_SYM) {
+    /** TODO: finir print_symbol **/
+	fprintf(f, "\t%08x", elf_SYM.st_value);
+	fprintf(f, "\t   0");
+	switch(ELF32_ST_TYPE(elf_SYM.st_info)){
+		case STT_OBJECT:
+		fprintf(f, "\tOBJECT");break;
+		case STT_FUNC:
+		fprintf(f, "\tFUNC");break;
+		case STT_SECTION:
+		fprintf(f, "\tSECTION");break;
+		case STT_FILE:
+		fprintf(f, "\tFILE");break;
+		case STT_LOPROC:
+		case STT_HIPROC:
+		case STT_NOTYPE:
+		default:
+		fprintf(f, "\tNOTYPE");break;
+	}
+	switch(ELF32_ST_BIND(elf_SYM.st_info)){
+		case STB_LOCAL:
+		fprintf(f,"\tLOCAL");break;
+		case STB_GLOBAL:
+		fprintf(f,"\tGLOBAL");break;
+		case STB_WEAK:
+		case STB_LOPROC:
+		case STB_HIPROC:
+		default:
+		fprintf(f,"\tUNKNOWN");break;
+	}
+	
+	
 
-	fprintf(f,"\n");
+	fprintf(f, "\n");
 }
 
-void print_symbols_header(FILE *f, Elf32_Sym * arr_elf_SYM) {
-	size_t taille=sizeof(arr_elf_SYM);
-	fprintf(f,"\n");
-	fprintf(f, "Symbol table '.symtab' contains %lu entries:\n",taille);
-	fprintf(f,"   Num:    Value  Size Type    Bind   Vis      Ndx Name\n");
-    for(int i=0; i<taille; i++){
-    	fprintf(f,"     %d:",i);
-    	print_symbol_header(f,arr_elf_SYM[i]);
+void print_symbols(FILE *f, size_t nbSymboles, Elf32_Sym * arr_elf_SYM) {
+	fprintf(f, "\n");
+	fprintf(f, "Symbol table '.symtab' contains %lu entries:\n", nbSymboles);
+	fprintf(f, "   Num:\tValue\t\tSize\tType\tBind\tVis\tNdx Name\n");
+
+    for(int i = 0; i <= nbSymboles; i++){
+        fprintf(f, "   ");
+    	if (i > 9) fprintf(f, " %d:", i);
+        else  fprintf(f, "  %d:", i);
+    	print_symbol(f, arr_elf_SYM[i]);
     }
 }
 
+/* lit un reloc */
+void read_reloc(FILE *f, Elf32_Rel *elf_REL, int soff) {
+    fseek(f, soff, SEEK_SET);
 
+    bread(&elf_REL->r_offset, sizeof(Elf32_Addr), 1, f);
+    bread(&elf_REL->r_info, sizeof(uint32_t), 1, f);
+}
 
-/* Etape 5 */
-void fnprototype(FILE *f, void * Elf32){
+/* lit un rela */
+void read_reloca(FILE *f, Elf32_Rela *elf_RELA, int soff) {
+    fseek(f, soff, SEEK_SET);
 
+    bread(&elf_RELA->r_offset, sizeof(Elf32_Addr), 1, f);
+    bread(&elf_RELA->r_info, sizeof(uint32_t), 1, f);
+    bread(&elf_RELA->r_addend, sizeof(int32_t), 1, f);
+}
+
+/* appelle read_reloc et read_reloca pour stocker chaque relocations dans leurs tableaux respectifs */
+void read_relocsa(FILE *f, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t *nbRel, size_t *nbRela) {
+    /** 
+     * TODO: fonction read_relocsa
+     * les relocations & "rela" se trouvent dans les sections de type respectifs SHT_REL & SHT_RELA 
+     * il faut donc lire ttes les sections et traiter uniquement celle de type SHT_REL & SHT_RELA 
+     * puis ensuite appeler read_reloc ou read_reloc selon si on a un SHT_REL ou SHT_RELA 
+     * 
+     * ces deux fonctions (read_reloc/read_reloc) prennent un argument "soff" qui correspond au décalage
+     * depuis le début du fichier. Normalement cet argument correspond au sh_offset de la section en cours 
+     * de traitement et il faut ensuite retourner le resultat de ces fonctions dans leurs tableaux respectifs:
+     *     - arr_elf_REL pour un SHT_REL, et arr_elf_RELA pour un SHT_RELA
+     */
+}
+
+/* affichage de chaque relocs et reloca */
+void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t nbRel, size_t nbRela) {
+    /**
+     * TODO: fonction print_relocs
+     * Ici on affiche donc les REL et RELA de taille nbRel et nbRela.
+     * 
+     * INFO à afficher:
+     *      - pour REL:
+     *                  Offset, Info, Type (à recupérer depuis r_info), IndexSym (afficher juste l'index du symbole)
+     *      - pour RELA:
+     *                  Offset, Info, Type (à recupérer depuis r_info), IndexSym (afficher juste l'index du symbole), Addend
+     *          
+     * INFO: voir doc (p. 36, paragraphe sur "r_info") pour obtenir les infos depuis r_info (index de la table de symbole & type de relocation)
+     *       NOTE: possible qu'il y ait donc besoin de la table des symboles en argument (voir affichage de readelf -r)
+     *             --> l'ajouter si le cas!!
+     *      - essayez d'afficher au moins le nom du symbole avec l'index de celui-ci, avec la fonction read_name_from_STable() ca doit être faisable
+     * 
+     */
 }
