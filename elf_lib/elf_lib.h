@@ -306,11 +306,11 @@ void write_elf (FILE *f, Elf32 elf_h);
 /* Etape 2 */
 /* readelf -S */
 void read_sections(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH);
-void print_sections_header(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH);
+void print_sections_header(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH);
 
 /* Etape 3 */
 /* readelf -x num */
-void read_data_section(FILE *f, Elf32_SH *elf_SH);
-void print_data_section(FILE *f, Elf32_SH *elf_SH);
+void read_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_SH *elf_SH);
+void print_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_SH *elf_SH);
 
 #endif

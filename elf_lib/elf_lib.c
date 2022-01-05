@@ -195,71 +195,106 @@ void read_sections(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH) {
  *        en-tête des sections ELF 
  * 
  * @param f flux
+ * @param fout flux de sorite
  * @param elf_h en-tête ELF
  * @param arr_elf_SH tableau d'en-têtes section
  */
-void print_sections_header(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH) {
+void print_sections_header(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH) {
 
-    printf(" [Nr]\tName\t\t\tType\t\tAddr\tOff\tSize\tES\tFlg\tLk\tInf\tAl");
-    printf("\n");
+    fprintf(fout, " [Nr]\tName\t\t\tType\t\tAddr\tOff\tSize\tES\tFlg\tLk\tInf\tAl");
+    fprintf(fout, "\n");
 
     for (int i = 0; i < elf_h.e_shnum; i ++) {
 
         Elf32_SH sectionHeader = arr_elf_SH[i];
 
-        if (i > 9) printf(" [%d]", i);
-        else printf(" [ %d]", i);
+        if (i > 9) fprintf(fout, " [%d]", i);
+        else fprintf(fout, " [ %d]", i);
 
-        printf("\t");
-        printf("%-15.15s", read_name_from_STable(f, elf_h, arr_elf_SH[elf_h.e_shstrndx], sectionHeader.sh_name));
-        printf("\t\t");
+        fprintf(fout, "\t");
+        fprintf(fout, "%-15.15s", read_name_from_STable(f, elf_h, arr_elf_SH[elf_h.e_shstrndx], sectionHeader.sh_name));
+        fprintf(fout, "\t\t");
         switch (sectionHeader.sh_type) {
-            case SHT_NULL: printf("%-10s", "NULL"); break;
-            case SHT_PROGBITS: printf("%-10s", "PROGBITS"); break;
-            case SHT_SYMTAB: printf("%-10s", "SYMTAB"); break;
-            case SHT_STRTAB: printf("%-10s", "STRTAB"); break;
-            case SHT_RELA: printf("%-10s", "RELA"); break;
-            case SHT_HASH: printf("%-10s", "HASH"); break;
-            case SHT_DYNAMIC: printf("%-10s", "DYNAMIC"); break;
-            case SHT_NOTE: printf("%-10s", "NOTE"); break;
-            case SHT_NOBITS: printf("%-10s", "NOBITS"); break;
-            case SHT_REL: printf("%-10s", "REL"); break;
-            case SHT_SHLIB: printf("%-10s", "SHLIB"); break;
-            case SHT_DYNSYM: printf("%-10s", "DYNSYM"); break;
-            case SHT_LOPROC: printf("%-10s", "LOPROC"); break;
-            case SHT_HIPROC: printf("%-10s", "HIPROC"); break;
-            case SHT_LOUSER: printf("%-10s", "LOUSER"); break;
-            case SHT_HIUSER: printf("%-10s", "HIUSER"); break;
-            case SHT_ARM_ATTRIBUTES: printf("%-10s", "ARM_ATTRIBUTES"); break;
-            default: printf("%x", sectionHeader.sh_type); break;
+            case SHT_NULL: fprintf(fout, "%-10s", "NULL"); break;
+            case SHT_PROGBITS: fprintf(fout, "%-10s", "PROGBITS"); break;
+            case SHT_SYMTAB: fprintf(fout, "%-10s", "SYMTAB"); break;
+            case SHT_STRTAB: fprintf(fout, "%-10s", "STRTAB"); break;
+            case SHT_RELA: fprintf(fout, "%-10s", "RELA"); break;
+            case SHT_HASH: fprintf(fout, "%-10s", "HASH"); break;
+            case SHT_DYNAMIC: fprintf(fout, "%-10s", "DYNAMIC"); break;
+            case SHT_NOTE: fprintf(fout, "%-10s", "NOTE"); break;
+            case SHT_NOBITS: fprintf(fout, "%-10s", "NOBITS"); break;
+            case SHT_REL: fprintf(fout, "%-10s", "REL"); break;
+            case SHT_SHLIB: fprintf(fout, "%-10s", "SHLIB"); break;
+            case SHT_DYNSYM: fprintf(fout, "%-10s", "DYNSYM"); break;
+            case SHT_LOPROC: fprintf(fout, "%-10s", "LOPROC"); break;
+            case SHT_HIPROC: fprintf(fout, "%-10s", "HIPROC"); break;
+            case SHT_LOUSER: fprintf(fout, "%-10s", "LOUSER"); break;
+            case SHT_HIUSER: fprintf(fout, "%-10s", "HIUSER"); break;
+            case SHT_ARM_ATTRIBUTES: fprintf(fout, "%-10s", "ARM_ATTRIBUTES"); break;
+            default: fprintf(fout, "%x", sectionHeader.sh_type); break;
         }
-        printf("\t");
-        printf("%06x", sectionHeader.sh_addr);
-        printf("\t");
-        printf("%06x", sectionHeader.sh_offset);
-        printf("\t");
-        printf("%06x", sectionHeader.sh_size);
-        printf("\t");
-        printf("%02x", sectionHeader.sh_entsize);
-        printf("\t");
-        printf("%s", get_flags(sectionHeader.sh_flags));
-        printf("\t");
-        printf("%d", sectionHeader.sh_link);
-        printf("\t");
-        printf("%d", sectionHeader.sh_info);
-        printf("\t");
-        printf("%d", sectionHeader.sh_addralign);
-        printf("\n");
+        fprintf(fout, "\t");
+        fprintf(fout, "%06x", sectionHeader.sh_addr);
+        fprintf(fout, "\t");
+        fprintf(fout, "%06x", sectionHeader.sh_offset);
+        fprintf(fout, "\t");
+        fprintf(fout, "%06x", sectionHeader.sh_size);
+        fprintf(fout, "\t");
+        fprintf(fout, "%02x", sectionHeader.sh_entsize);
+        fprintf(fout, "\t");
+        fprintf(fout, "%s", get_flags(sectionHeader.sh_flags));
+        fprintf(fout, "\t");
+        fprintf(fout, "%d", sectionHeader.sh_link);
+        fprintf(fout, "\t");
+        fprintf(fout, "%d", sectionHeader.sh_info);
+        fprintf(fout, "\t");
+        fprintf(fout, "%d", sectionHeader.sh_addralign);
+        fprintf(fout, "\n");
     }
-    printf(" Key to Flags:\n");
-    printf("\tW (write), A (alloc), X (execute), M (merge), S (strings), I (info),\n");
-    printf("\tL (link order), O (extra OS processing required), G (group), T (TLS),\n");
+    fprintf(fout, " Key to Flags:\n");
+    fprintf(fout, "\tW (write), A (alloc), X (execute), M (merge), S (strings), I (info),\n");
+    fprintf(fout, "\tL (link order), O (extra OS processing required), G (group), T (TLS),\n");
 } 
 
-/* Etape 3 */
-/* readelf -x num */
-void read_data_section(FILE *f, Elf32_SH *elf_SH);
-void print_data_section(FILE *f, Elf32_SH *elf_SH);
+/**
+ * @brief Retourne dans le flux de sortie, le contenu en héxadecimal
+ *        de la section spécifiée en argument, depuis le flux spécifié
+ * 
+ * @param f flux
+ * @param fout flux de sortie
+ * @param elf_h en-tête EFL
+ * @param arr_elf_SH tableau d'en-têtes section
+ * @param elf_SH en-tête section
+ */
+void read_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_SH *elf_SH) {
+    fseek(f, elf_SH->sh_offset, SEEK_SET);
+    
+    for (int i = 0; i < elf_SH->sh_size; i++) {
+        if (i%4 == 0) fprintf(fout, " ");
+        if (i%16 == 0) fprintf(fout, "\n0x%08x ", i);
+        fprintf(fout, "%.2x", fgetc(f));
+    }
+}
+
+/**
+ * @brief Affiche le contenu en héxadecimal de la section 
+ *        spécifiée en argument
+ * 
+ * @param f flux
+ * @param fout flux de sortie
+ * @param elf_h en-tête EFL
+ * @param arr_elf_SH tableau d'en-têtes section
+ * @param elf_SH en-tête section
+ */
+void print_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_SH *elf_SH) {
+    fprintf(fout, "\n");
+    fprintf(fout, "Hex dump of section '%s':", read_name_from_STable(f, elf_h, arr_elf_SH[elf_h.e_shstrndx], elf_SH->sh_name));
+    fprintf(fout, "\n");
+
+    read_data_section(f, fout, elf_h, arr_elf_SH, elf_SH);
+    fprintf(fout, "\n");
+}
 
 /* Etape 5 */
 void fnprototype(FILE *f, void * Elf32){
