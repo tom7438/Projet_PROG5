@@ -160,7 +160,7 @@ void write_elf(FILE *f, Elf32 elf_h) {
     fprintf(f,"Number of program headers:\t   %d\n",elf_h.e_phnum);
     fprintf(f,"Size of section headers:\t   %d (bytes)\n",elf_h.e_shentsize);
     fprintf(f,"Number of section headers:\t   %d\n",elf_h.e_shnum);
-    fprintf(f,"Section header string table index: %d\n",elf_h.e_shstrndx);
+    fprintf(f,"Section header string table index: %d",elf_h.e_shstrndx);
 }
 
 /**
