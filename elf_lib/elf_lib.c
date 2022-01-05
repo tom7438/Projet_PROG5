@@ -330,7 +330,7 @@ void read_symbol_section(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *
     *nbSymboles = j-1;
 }
 
-void print_symbol(FILE *f, Elf32_Sym elf_SYM) {
+void print_symbol(FILE *f, Elf32 elf_h, Elf32_SH STable, Elf32_Sym elf_SYM) {
     /** TODO: finir print_symbol **/
 	fprintf(f, "\t%08x", elf_SYM.st_value);
 	fprintf(f, "\t   0");
@@ -378,15 +378,20 @@ void print_symbol(FILE *f, Elf32_Sym elf_SYM) {
 /*		case SHN_UNDEF:*/
 /*		fprintf(f,"\tUND");break;*/
 		default :
-		fprintf(f,"\t  %d",elf_SYM.st_shndx);break;
+		fprintf(f,"\t ");
+		if(elf_SYM.st_shndx<10){fprintf(f," ");}
+		fprintf(f,"%d",elf_SYM.st_shndx);break;
 	}
+	char *name=read_name_from_STable(f, elf_h, STable, elf_SYM.st_name);
 
+	fprintf(f,"\t%s", name);
+	
 
 
 	fprintf(f, "\n");
 }
 
-void print_symbols(FILE *f, size_t nbSymboles, Elf32_Sym * arr_elf_SYM) {
+void print_symbols(FILE *f, Elf32 elf_h, Elf32_SH STable, size_t nbSymboles, Elf32_Sym * arr_elf_SYM) {
 	fprintf(f, "\n");
 	fprintf(f, "Symbol table '.symtab' contains %lu entries:\n", nbSymboles);
 	fprintf(f, "   Num:\tValue\t\tSize\tType\tBind\tVis\tNdx Name\n");
@@ -396,7 +401,7 @@ void print_symbols(FILE *f, size_t nbSymboles, Elf32_Sym * arr_elf_SYM) {
         fprintf(f, "   ");
     	if (i > 9) fprintf(f, " %d:", i);
         else  fprintf(f, "  %d:", i);
-    	print_symbol(f, arr_elf_SYM[i]);
+    	print_symbol(f, elf_h, STable, arr_elf_SYM[i]);
     }
 }
 
