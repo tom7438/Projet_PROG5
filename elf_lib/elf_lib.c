@@ -313,7 +313,6 @@ typedef struct {
 
 /* Elf32 *elf récupéré dans l'étape 1 et Elf32_SH * arr_elf_SH récupéré à l'étape 2 */
 void read_symbol_section(FILE *f, Elf32 *elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, size_t *nbSymboles){
-
     int i;
     int found = 0;
     for (i=0; i<elf_h->e_shnum; i++){
@@ -323,10 +322,12 @@ void read_symbol_section(FILE *f, Elf32 *elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym 
         }
     }
     // si pas de .symtab, erreur
+
     if (found == 0) exit(1);
     fseek(f, arr_elf_SH[i].sh_offset, SEEK_SET);
+
     int j = 0;
-    for (j=0; j < arr_elf_SH[i].sh_size/sizeof(Elf32_Sym); j++){
+    for (j = 0; j < arr_elf_SH[i].sh_size/sizeof(Elf32_Sym); j++){
         Elf32_Sym elf_SYM;
         bread(&elf_SYM.st_name,sizeof(uint32_t),1,f);
         bread(&elf_SYM.st_value,sizeof(Elf32_Addr),1,f);
@@ -340,7 +341,7 @@ void read_symbol_section(FILE *f, Elf32 *elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym 
 }
 
 void print_symbol_header(FILE *f, Elf32_Sym elf_SYM) {
-	fprintf(f," %08x", elf_SYM.st_value);
+	fprintf(f,"\t%08x", elf_SYM.st_value);
 
 	fprintf(f,"\n");
 }
@@ -349,6 +350,7 @@ void print_symbols_header(FILE *f, size_t taille, Elf32_Sym * arr_elf_SYM) {
 	fprintf(f,"\n");
 	fprintf(f, "Symbol table '.symtab' contains %lu entries:\n",taille);
 	fprintf(f,"   Num:\tValue\t\tSize\tType\tBind\tVis\tNdx Name\n");
+
     for(int i = 0; i <= taille; i++){
         fprintf(f, "   ");
     	if (i > 9) fprintf(f," %d:",i);
