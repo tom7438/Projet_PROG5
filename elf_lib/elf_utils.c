@@ -61,10 +61,10 @@ char* get_flags(uint32_t flags) {
 }
 
 /**
- * @brief Lis le nom de la section depuis la table
+ * @brief Lit le nom de la section depuis la table
  *        des chaînes de caractères
  * 
- * @param f pointeur FILE
+ * @param f flux
  * @param elf_h en-tête ELF
  * @param STable section ELF .shstrtab
  * @param sh_name index de la section désirée
