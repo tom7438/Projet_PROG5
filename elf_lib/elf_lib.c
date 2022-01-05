@@ -327,7 +327,7 @@ void read_symbol_section(FILE *f, Elf32 *elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym 
   
     fseek(f, arr_elf_SH[i].sh_offset, SEEK_SET);
     Elf32_Sym elf_SYM;
-    for (int j=0; j<arr_elf_SH[i].sh_size; j++){
+    for (int j=0; j<arr_elf_SH[i].sh_size/sizeof(Elf32_Sym); j++){
         bread(&elf_SYM.st_name,sizeof(uint32_t),1,f);
         bread(&elf_SYM.st_value,sizeof(Elf32_Addr),1,f);
         bread(&elf_SYM.st_size,sizeof(uint32_t),1,f);
