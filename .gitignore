@@ -17,3 +17,4 @@ config.guess
 config.sub
 .dirstamp
 read_elf
+.DS_Store
