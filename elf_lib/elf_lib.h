@@ -115,6 +115,9 @@
 #define ELF32_ST_TYPE(i)    ((i)&0xf)
 #define ELF32_ST_INFO(b,t)  (((b)<<4)+((t)&0xf))
 
+#define ELF32_ST_VISIBILITY(o)       ((o)&0x3)
+#define ELF64_ST_VISIBILITY(o)       ((o)&0x3)
+
 /* ELF32_ST_BIND */
 #define STB_LOCAL       0
 #define STB_GLOBAL      1
@@ -130,6 +133,13 @@
 #define STT_FILE        4
 #define STT_LOPROC      13
 #define STT_HIPROC      15
+
+/* ELF32_ST_VISIBILITY */
+
+#define STV_DEFAULT     0
+#define STV_INTERNAL    1
+#define STV_HIDDEN      2
+#define STV_PROTECTED   3
 
 /* p_type */
 #define PT_NULL         0

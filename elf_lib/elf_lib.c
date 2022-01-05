@@ -359,6 +359,19 @@ void print_symbol(FILE *f, Elf32_Sym elf_SYM) {
 		default:
 		fprintf(f,"\tUNKNOWN");break;
 	}
+	switch(ELF32_ST_VISIBILITY(elf_SYM.st_other)){
+		case STV_DEFAULT:
+		fprintf(f,"\tDEFAULT");break;
+		case STV_INTERNAL:
+		fprintf(f,"\tINTERNAL");break;
+		case STV_HIDDEN:
+		fprintf(f,"\tHIDDEN");break;
+		case STV_PROTECTED:
+		fprintf(f,"\tPROTECTED");break;
+		default :
+		fprintf(f,"\tUNKNOWN");break;
+	}
+	
 	
 	
 
