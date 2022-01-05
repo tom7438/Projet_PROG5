@@ -94,14 +94,20 @@
 #define SHT_HIPROC 	    0x7fffffff
 #define SHT_LOUSER	    0x80000000
 #define SHT_HIUSER	    0xffffffff
+#define SHT_ARM_ATTRIBUTES 0x70000003
 
 /** sh_flags[] **/
-#define SHF_WRITE		0x1
-#define SHF_ALLOC	    0x2
-#define SHF_EXECINSTR	0x4
-#define SHF_MASKPROC	0xf0000000
-
-#define STN_UNDEF       0
+#define SHF_WRITE		         0x1
+#define SHF_ALLOC	            0x2
+#define SHF_EXECINSTR	      0x4
+#define SHF_MERGE             0x10
+#define SHF_STRINGS	         0x20
+#define SHF_INFO_LINK	      0x40
+#define SHF_LINK_ORDER	      0x80
+#define SHF_OS_NONCONFORMING	0x100
+#define SHF_GROUP	            0x200
+#define SHF_TLS	            0x400
+#define STN_UNDEF             0
 
 
 /**  **/
@@ -225,6 +231,8 @@
 #define ELFOSABI_ARM	     97	/* ARM */
 #define ELFOSABI_STANDALONE 255	/* Standalone (embedded) application */
 
+#define SH_TABLE_MAX 100
+
 typedef uint32_t Elf32_Addr;
 typedef uint32_t Elf32_Off;
 
@@ -292,17 +300,13 @@ typedef struct {
 } Elf64_SH;
 	
 /* Etape 1 */
-size_t bread(void *ptr, size_t s, size_t n, FILE *f);
-/* readelf -h */
 void init_header(FILE *f, Elf32 *elf_h);
 void write_elf (FILE *f, Elf32 elf_h);
 
 /* Etape 2 */
 /* readelf -S */
-void read_sections(FILE *f, Elf32 *elf_h, Elf32_SH **arr_elf_SH);
-void read_section(FILE *f, Elf32 *elf_h, Elf32_SH *elf_SH);
-void print_sections_header(FILE *f, Elf32_SH **arr_elf_SH);
-void print_section_header(FILE *f, Elf32_SH *elf_SH);
+void read_sections(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH);
+void print_sections_header(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH);
 
 /* Etape 3 */
 /* readelf -x num */
