@@ -200,7 +200,8 @@ void read_sections(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH) {
  * @param arr_elf_SH tableau d'en-têtes section
  */
 void print_sections_header(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH) {
-
+    
+    fprintf(fout, "Section Headers (%d), starting at offset 0x%X:\n", elf_h.e_shnum, elf_h.e_shoff);
     fprintf(fout, " [Nr]\tName\t\t\tType\t\tAddr\tOff\tSize\tES\tFlg\tLk\tInf\tAl");
     fprintf(fout, "\n");
 
@@ -252,9 +253,9 @@ void print_sections_header(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_S
         fprintf(fout, "%d", sectionHeader.sh_addralign);
         fprintf(fout, "\n");
     }
-    fprintf(fout, " Key to Flags:\n");
+    fprintf(fout, "\n Key to Flags:\n");
     fprintf(fout, "\tW (write), A (alloc), X (execute), M (merge), S (strings), I (info),\n");
-    fprintf(fout, "\tL (link order), O (extra OS processing required), G (group), T (TLS),\n");
+    fprintf(fout, "\tL (link order), O (extra OS processing required), G (group), T (TLS)\n");
 } 
 
 /**

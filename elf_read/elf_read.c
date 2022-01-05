@@ -91,10 +91,12 @@ int main(int argc, char *argv[]) {
 
         if (showHeader) {
             write_elf(stdout, header);
+            printf("\n");
         }
 
         if (showSectionsH) {
             print_sections_header(f, stdout, header, sections);
+            printf("\n");
         }
 
         if (sectionsAAfficher_s > 0) {
@@ -104,21 +106,22 @@ int main(int argc, char *argv[]) {
                 int result = sscanf(nom_sec, "%d", &num);
                 if (result == 1) {
                     if (num >= 0 && num < header.e_shnum) print_data_section(f, stdout, header, sections, &sections[num]);
-                    else printf("-- No section number %d was found\n", num);
+                    else printf("-- No section number %d was found", num);
                 } else {
                     // si chaîne de caractères, on cherche l'index de la section nom_sec
                     // dans le tableau
                     int found = 0;
-                    for (int j = 0; j < header.e_shnum; j++) {
+                    int j = 0; 
+                    for (j = 0; j < header.e_shnum; j++) {
                         if (strcmp(read_name_from_STable(f, header, sections[header.e_shstrndx], sections[j].sh_name), nom_sec) == 0) {
                             found = 1;
                             break;
                         }
                     }
-                    if (found == 1) print_data_section(f, stdout, header, sections, &sections[found]);
-                    else printf("-- No section named '%s' was found\n", nom_sec);
-
+                    if (found == 1) print_data_section(f, stdout, header, sections, &sections[j]);
+                    else printf("-- No section named '%s' was found", nom_sec);
                 }
+                printf("\n");
             }
         }
     }
