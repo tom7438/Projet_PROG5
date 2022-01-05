@@ -374,6 +374,8 @@ void print_symbol(FILE *f, Elf32_Sym elf_SYM) {
 	switch(elf_SYM.st_shndx){
 		case SHN_ABS:
 		fprintf(f,"\tABS");break;
+/*		case SHN_UNDEF:*/
+/*		fprintf(f,"\tUND");break;*/
 		default :
 		fprintf(f,"\t  %d",elf_SYM.st_shndx);break;
 	}
