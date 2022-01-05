@@ -329,39 +329,32 @@ void read_symbol_section(FILE *f, Elf32 *elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym 
     int j = 0;
     for (j = 0; j < arr_elf_SH[i].sh_size/sizeof(Elf32_Sym); j++){
         Elf32_Sym elf_SYM;
-        bread(&elf_SYM.st_name,sizeof(uint32_t),1,f);
-        bread(&elf_SYM.st_value,sizeof(Elf32_Addr),1,f);
-        bread(&elf_SYM.st_size,sizeof(uint32_t),1,f);
-        bread(&elf_SYM.st_info,sizeof(unsigned char),1,f);
-        bread(&elf_SYM.st_other,sizeof(unsigned char),1,f);
-        bread(&elf_SYM.st_shndx,sizeof(uint16_t),1,f);
+        bread(&elf_SYM.st_name, sizeof(uint32_t), 1, f);
+        bread(&elf_SYM.st_value, sizeof(Elf32_Addr), 1, f);
+        bread(&elf_SYM.st_size, sizeof(uint32_t), 1, f);
+        bread(&elf_SYM.st_info, sizeof(unsigned char), 1, f);
+        bread(&elf_SYM.st_other, sizeof(unsigned char), 1, f);
+        bread(&elf_SYM.st_shndx, sizeof(uint16_t), 1, f);
         arr_elf_SYM[j]=elf_SYM;
     }
     *nbSymboles = j-1;
 }
 
-void print_symbol_header(FILE *f, Elf32_Sym elf_SYM) {
-	fprintf(f,"\t%08x", elf_SYM.st_value);
+void print_symbol(FILE *f, Elf32_Sym elf_SYM) {
+	fprintf(f, "\t%08x", elf_SYM.st_value);
 
-	fprintf(f,"\n");
+	fprintf(f, "\n");
 }
 
-void print_symbols_header(FILE *f, size_t taille, Elf32_Sym * arr_elf_SYM) {
-	fprintf(f,"\n");
-	fprintf(f, "Symbol table '.symtab' contains %lu entries:\n",taille);
-	fprintf(f,"   Num:\tValue\t\tSize\tType\tBind\tVis\tNdx Name\n");
+void print_symbols(FILE *f, size_t nbSymboles, Elf32_Sym * arr_elf_SYM) {
+	fprintf(f, "\n");
+	fprintf(f, "Symbol table '.symtab' contains %lu entries:\n", nbSymboles);
+	fprintf(f, "   Num:\tValue\t\tSize\tType\tBind\tVis\tNdx Name\n");
 
-    for(int i = 0; i <= taille; i++){
+    for(int i = 0; i <= nbSymboles; i++){
         fprintf(f, "   ");
-    	if (i > 9) fprintf(f," %d:",i);
-        else  fprintf(f,"  %d:",i);
-    	print_symbol_header(f,arr_elf_SYM[i]);
+    	if (i > 9) fprintf(f, " %d:", i);
+        else  fprintf(f, "  %d:", i);
+    	print_symbol(f, arr_elf_SYM[i]);
     }
-}
-
-
-
-/* Etape 5 */
-void fnprototype(FILE *f, void * Elf32){
-
 }

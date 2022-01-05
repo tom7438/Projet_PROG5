@@ -134,7 +134,7 @@ int main(int argc, char *argv[]) {
             Elf32_Sym symbols[SH_TABLE_MAX];
             size_t nbSymboles;
             read_symbol_section(f, &header, sections, symbols, &nbSymboles);
-            print_symbols_header(stdout, nbSymboles, symbols); 
+            print_symbols(stdout, nbSymboles, symbols); 
         }
     }
 
