@@ -154,13 +154,13 @@ void write_elf(FILE *f, Elf32 elf_h) {
     fprintf(f,"Entry point address:\t\t   0x%x\n",elf_h.e_entry);
     fprintf(f,"Start of program headers:\t   %d (bytes into file)\n",elf_h.e_phoff);
     fprintf(f,"Start of section headers:\t   %d (bytes into file)\n",elf_h.e_shoff);
-    fprintf(f,"Flags:\t\t\t\t   %#x, Version5 EABI, soft-float ABI\n",elf_h.e_flags);
+    fprintf(f,"Flags:\t\t\t\t   %#x, Version5 EABI\n",elf_h.e_flags);
     fprintf(f,"Size of this header:\t\t   %d (bytes)\n",elf_h.e_ehsize);
     fprintf(f,"Size of program headers:\t   %d (bytes)\n",elf_h.e_phentsize);
     fprintf(f,"Number of program headers:\t   %d\n",elf_h.e_phnum);
     fprintf(f,"Size of section headers:\t   %d (bytes)\n",elf_h.e_shentsize);
     fprintf(f,"Number of section headers:\t   %d\n",elf_h.e_shnum);
-    fprintf(f,"Section header string table index: %d\n",elf_h.e_shstrndx);
+    fprintf(f,"Section header string table index: %d",elf_h.e_shstrndx);
 }
 
 /**
