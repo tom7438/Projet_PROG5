@@ -298,7 +298,27 @@ typedef struct {
    uint64_t   sh_addralign;
    uint64_t   sh_entsize;
 } Elf64_SH;
-	
+
+
+typedef struct {
+    uint32_t      st_name;
+    Elf32_Addr    st_value;
+    uint32_t      st_size;
+    unsigned char st_info;
+    unsigned char st_other;
+    uint16_t      st_shndx;
+} Elf32_Sym;
+
+typedef struct {
+    uint32_t      st_name;
+    unsigned char st_info;
+    unsigned char st_other;
+    uint16_t      st_shndx;
+    Elf64_Addr    st_value;
+    uint64_t      st_size;
+} Elf64_Sym;
+
+
 /* Etape 1 */
 void init_header(FILE *f, Elf32 *elf_h);
 void write_elf (FILE *f, Elf32 elf_h);
