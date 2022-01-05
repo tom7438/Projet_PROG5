@@ -371,7 +371,12 @@ void print_symbol(FILE *f, Elf32_Sym elf_SYM) {
 		default :
 		fprintf(f,"\tUNKNOWN");break;
 	}
-	
+	switch(elf_SYM.st_shndx){
+		case SHN_ABS:
+		fprintf(f,"\tABS");break;
+		default :
+		fprintf(f,"\t  %d",elf_SYM.st_shndx);break;
+	}
 	
 	
 
@@ -382,8 +387,9 @@ void print_symbols(FILE *f, size_t nbSymboles, Elf32_Sym * arr_elf_SYM) {
 	fprintf(f, "\n");
 	fprintf(f, "Symbol table '.symtab' contains %lu entries:\n", nbSymboles);
 	fprintf(f, "   Num:\tValue\t\tSize\tType\tBind\tVis\tNdx Name\n");
+	fprintf(f, "     0: 00000000\t   0\tNOTYPE\tLOCAL\tDEFAULT\tUND\n");
 
-    for(int i = 0; i <= nbSymboles; i++){
+    for(int i = 1; i <= nbSymboles; i++){
         fprintf(f, "   ");
     	if (i > 9) fprintf(f, " %d:", i);
         else  fprintf(f, "  %d:", i);
