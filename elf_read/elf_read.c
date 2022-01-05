@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
                 int result = sscanf(nom_sec, "%d", &num);
                 if (result == 1) {
                     if (num >= 0 && num < header.e_shnum) print_data_section(f, stdout, header, sections, &sections[num]);
-                    else printf("-- No section number %d.\n", num);
+                    else printf("-- No section number %d was found\n", num);
                 } else {
                     // si chaîne de caractères, on cherche l'index de la section nom_sec
                     // dans le tableau
@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
                         }
                     }
                     if (found == 1) print_data_section(f, stdout, header, sections, &sections[found]);
-                    else printf("-- No section named '%s' found.\n", nom_sec);
+                    else printf("-- No section named '%s' was found\n", nom_sec);
 
                 }
             }
