@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
 		{ "sections", no_argument, NULL, 'S' },
 		{ "section", required_argument, NULL, 'x' },
 		{ "symbols", no_argument, NULL, 's' },
-		{ "relocations", required_argument, NULL, 'r' },
+		{ "relocations", no_argument, NULL, 'r' },
 		{ "help", no_argument, NULL, 'H' },
 		{ NULL, 0, NULL, 0 }
 	};
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
     int showHeader = 0, showSectionsH = 0, showSymbolTable = 0, showRelocs = 0;
 
     /* à compléter */
-    while ((opt = getopt_long(argc, argv, "hSsx:r:H", longopts, NULL)) != -1) {
+    while ((opt = getopt_long(argc, argv, "hSsrx:H", longopts, NULL)) != -1) {
 		switch(opt) {
             case 'h': {
                 showHeader = 1;
