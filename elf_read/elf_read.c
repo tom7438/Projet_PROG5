@@ -65,9 +65,10 @@ int main(int argc, char *argv[]) {
                 showSymbolTable = 1;
                 break;
             }
-            case 'r':
+            case 'r': {
                 showRelocs = 1;
                 break;
+            }
             case 'H':
                 usage(argv[0]);
                 exit(0);
