@@ -297,6 +297,64 @@ void print_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, 
     fprintf(fout, "\n");
 }
 
+
+/*  Etape 4 */
+
+/*
+typedef struct {
+    uint32_t      st_name;
+    Elf32_Addr    st_value;
+    uint32_t      st_size;
+    unsigned char st_info;
+    unsigned char st_other;
+    uint16_t      st_shndx;
+} Elf32_SYM;
+*/
+
+/* Elf32 *elf récupéré dans l'étape 1 et Elf32_SH * arr_elf_SH récupéré à l'étape 2 */
+void read_symbol_section(FILE *f, Elf32 *elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM){
+    
+    uint16_t taille=elf_h->e_shnum;
+    Elf32_Off offset;
+    uint16_t tailleSym;
+	int i;
+    for (i=0; i<taille; i++){
+        if(arr_elf_SH[i].sh_type==SHT_SYMTAB){
+            printf("The symbol table is found\n");
+            
+            break;
+        }
+    }
+    offset=arr_elf_SH[i].sh_offset;
+    tailleSym=arr_elf_SH[i].sh_size / sizeof(Elf32_Sym);
+    Elf32_Sym elf_SYM[tailleSym];
+    fseek(f, offset, SEEK_SET);
+    bread(&elf_SYM->st_name,sizeof(uint32_t),1,f);
+    bread(&elf_SYM->st_value,sizeof(Elf32_Addr),1,f);
+    bread(&elf_SYM->st_size,sizeof(uint32_t),1,f);
+    bread(&elf_SYM->st_info,sizeof(unsigned char),1,f);
+    bread(&elf_SYM->st_other,sizeof(unsigned char),1,f);
+    bread(&elf_SYM->st_shndx,sizeof(uint16_t),1,f);
+    arr_elf_SYM=elf_SYM;
+}
+
+void print_symbol_header(FILE *f, Elf32_Sym elf_SYM) {
+/*    if(elf_SYM->st_name==0){*/
+/*        fprintf(stderr, "The symbol has no name\n");*/
+/*        exit(EXIT_FAILURE);*/
+/*    }*/
+/*    else{*/
+/*        fseek(f, elf_SYM->st_name, SEEK_SET);*/
+/*        fread(, , , f)*/
+/*    }*/
+}
+
+void print_symbols_header(FILE *f, Elf32_Sym * arr_elf_SYM) {
+    
+}
+
+
+
 /* Etape 5 */
 void fnprototype(FILE *f, void * Elf32){
 
