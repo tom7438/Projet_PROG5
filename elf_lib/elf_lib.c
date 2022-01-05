@@ -384,6 +384,7 @@ void read_relocsa(FILE *f, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, siz
 /* affichage de chaque relocs et reloca */
 void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t nbRel, size_t nbRela) {
     /**
+     * TODO: fonction print_relocs
      * Ici on affiche donc les REL et RELA de taille nbRel et nbRela.
      * 
      * INFO à afficher:
