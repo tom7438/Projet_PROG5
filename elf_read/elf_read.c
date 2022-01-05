@@ -132,8 +132,9 @@ int main(int argc, char *argv[]) {
 
         if (showSymbolTable) {
             Elf32_Sym symbols[SH_TABLE_MAX];
-            read_symbol_section(f, &header, sections, symbols);
-            print_symbols_header(stdout, symbols); 
+            size_t nbSymboles;
+            read_symbol_section(f, &header, sections, symbols, &nbSymboles);
+            print_symbols_header(stdout, nbSymboles, symbols); 
         }
     }
 
