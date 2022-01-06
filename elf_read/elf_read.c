@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
         read_sections(f, header, sections);
 
         if (showHeader) {
-            write_elf(stdout, header);
+            print_elf(stdout, header);
             printf("\n");
         }
 

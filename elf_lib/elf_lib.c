@@ -73,10 +73,10 @@ void init_header(FILE *f, Elf32 * elf_h){
  * @brief Affiche dans la sortie spécifiée les
  *        informations de l'en-tête ELF
  *
- * @param f flux
+ * @param f flux de sortie
  * @param elf_h en-tête ELF
  */
-void write_elf(FILE *f, Elf32 elf_h) {
+void print_elf(FILE *f, Elf32 elf_h) {
     fprintf(f, "ELF Header:\n ");
     fprintf(f, "Magic: ");
     for(int k = 0; k < EI_NIDENT; k++){
@@ -375,8 +375,8 @@ void print_symbol(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH STable, Elf32_Sym e
 	switch(elf_SYM.st_shndx){
 		case SHN_ABS:
 		fprintf(fout,"\tABS");break;
-/*		case SHN_UNDEF:*/
-/*		fprintf(fout,"\tUND");break;*/
+		case SHN_UNDEF:
+		fprintf(fout,"\tUND");break;
 		default :
 		fprintf(fout,"\t ");
 		if(elf_SYM.st_shndx<10){fprintf(fout," ");}

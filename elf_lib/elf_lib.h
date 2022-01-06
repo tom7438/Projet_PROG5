@@ -340,7 +340,7 @@ typedef struct {
 
 /* Etape 1 */
 void init_header(FILE *f, Elf32 *elf_h);
-void write_elf (FILE *f, Elf32 elf_h);
+void print_elf (FILE *f, Elf32 elf_h);
 
 /* Etape 2 */
 /* readelf -S */
