@@ -135,11 +135,11 @@ void read_symbol_names(FILE *f, Elf32_SH STable) {
 }
 
 /**
- * @brief Recherche une section par son type
+ * @brief Recherche des sections par son type
  * 
  * @param type type de la section recherché
  * @param shnum nombre de sections totales
- * @param sections tableau des sections
+ * @param sections tableau d'en-têtes section
  * @param arr_sections  tableau des sections trouvées
  * @return nb de sections trouvées
  */
@@ -169,7 +169,7 @@ int get_section_by_type(int type, int shnum, Elf32_SH *sections, Elf32_SH *arr_s
  * 
  * @param name nom de la section recherchée
  * @param shnum nombre de sections totales
- * @param sections tableau des sections
+ * @param sections tableau d'en-têtes section
  * @param section  section retournée
  * @return int (1 si trouvée, 0 sinon)
  */
