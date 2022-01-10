@@ -65,8 +65,9 @@ char* get_flags(uint32_t flags) {
 }
 
 /**
- * @brief Lit le nom de la section d'index st_name depuis 
- *        la table des chaînes de caractères correspondante
+ * @brief Retourne le nom de la section, dont l'index de table 
+ *        de chaîne de caractères est st_name, depuis la table des 
+ *        chaînes de caractères correspondante (ici, shstrtab)
  * 
  * @param st_name index de la section désirée
  * @return châine de caractères
@@ -83,8 +84,9 @@ char * read_from_shstrtab(uint32_t st_name) {
 }
 
 /**
- * @brief Lit le nom de symbole d'index st_name depuis 
- *        la table des chaînes de caractères correspondante
+ * @brief Retourne le nom de symbole, dont l'index de table 
+ *        de chaîne de caractères est st_name, depuis la table des 
+ *        chaînes de caractères correspondante (ici, symtab)
  * 
  * @param st_name index du nom de symbole
  * @return châine de caractères
