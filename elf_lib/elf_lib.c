@@ -303,22 +303,14 @@ void print_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, 
 
 /* Elf32 *elf récupéré dans l'étape 1 et Elf32_SH * arr_elf_SH récupéré à l'étape 2 */
 void read_symbol_section(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, size_t *nbSymboles){
-    int i;
-    int found = 0;
-    for (i=0; i < elf_h.e_shnum; i++){
-        if(arr_elf_SH[i].sh_type == SHT_SYMTAB){
-            found = 1;
-            break;
-        }
-    }
+    Elf32_SH symtab;
     // si pas de .symtab, erreur
-
-    if (found == 0) exit(1);
-    fseek(f, arr_elf_SH[i].sh_offset, SEEK_SET);
+    if (get_section_by_name(".symtab", elf_h.e_shnum, arr_elf_SH, &symtab) == 0) exit(1);
+    fseek(f, symtab.sh_offset, SEEK_SET);
 
     Elf32_Sym elf_SYM;
     int j = 0;
-    for (j = 0; j < arr_elf_SH[i].sh_size/sizeof(Elf32_Sym); j++){
+    for (j = 0; j < symtab.sh_size/sizeof(Elf32_Sym); j++){
         bread(&elf_SYM.st_name, sizeof(uint32_t), 1, f);
         bread(&elf_SYM.st_value, sizeof(Elf32_Addr), 1, f);
         bread(&elf_SYM.st_size, sizeof(uint32_t), 1, f);
