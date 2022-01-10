@@ -28,7 +28,9 @@ void init_header(FILE *f, Elf32 * elf_h){
     tmp = fread(&tab_e_ident, EI_NIDENT, 1, f);
     assert(tmp);
 
-    if (tab_e_ident[EI_MAG0] != ELFMAG0 || tab_e_ident[EI_MAG1] != ELFMAG1 || tab_e_ident[EI_MAG2] != ELFMAG2 || tab_e_ident[EI_MAG3] != ELFMAG3 || tab_e_ident[EI_CLASS]!=ELFCLASS32) {
+    if (tab_e_ident[EI_MAG0] != ELFMAG0 || 
+        tab_e_ident[EI_MAG1] != ELFMAG1 || tab_e_ident[EI_MAG2] != ELFMAG2 || 
+        tab_e_ident[EI_MAG3] != ELFMAG3 || tab_e_ident[EI_CLASS] != ELFCLASS32) {
         fprintf(stderr, "Erreur, le fichier n'est pas au format ELF32\n");
         exit(EXIT_FAILURE);
     }
@@ -82,85 +84,85 @@ void print_elf(FILE *f, Elf32 elf_h) {
     for(int k = 0; k < EI_NIDENT; k++){
         fprintf(f, "%.2x ",elf_h.e_ident[k]);
     }
-    fprintf(f,"\n");
+    fprintf(f, "\n");
 
-    fprintf(f,"Class:\t\t\t\t   ");
-    if (elf_h.e_ident[EI_CLASS] == ELFCLASS32) fprintf(f,"ELF32\n");
-    else fprintf(f,"None\n");
+    fprintf(f, "Class:\t\t\t\t   ");
+    if (elf_h.e_ident[EI_CLASS] == ELFCLASS32) fprintf(f, "ELF32\n");
+    else fprintf(f, "None\n");
 
-    fprintf(f,"Data:\t\t\t\t   ");
+    fprintf(f, "Data:\t\t\t\t   ");
     if (elf_h.e_ident[EI_DATA] == ELFDATA2LSB) fprintf(f, "2's complement, little endian\n");
     else if (elf_h.e_ident[EI_DATA] == ELFDATA2MSB) fprintf(f, "2's complement, big endian\n");
     else fprintf(f, "Unkonwn data format\n");
 
-    fprintf(f,"Version:\t\t\t   ");
+    fprintf(f, "Version:\t\t\t   ");
     if (elf_h.e_ident[EI_VERSION] == EV_CURRENT) fprintf(f, "1 (current)\n");
-    else fprintf(f,"0 (invalid)\n");
+    else fprintf(f, "0 (invalid)\n");
 
-    fprintf(f,"OS/ABI:\t\t\t\t   ");
+    fprintf(f, "OS/ABI:\t\t\t\t   ");
     switch (elf_h.e_ident[EI_OSABI]) {
-        case ELFOSABI_SYSV: fprintf(f,"UNIX - System V\n"); break;
-        case ELFOSABI_HPUX: fprintf(f,"HP-UX ABI\n"); break;
-        case ELFOSABI_NETBSD: fprintf(f,"NetBSD ABI\n"); break;
-        case ELFOSABI_LINUX: fprintf(f,"Linux ABI\n"); break;
-        case ELFOSABI_SOLARIS: fprintf(f,"Solaris ABI\n"); break;
-        case ELFOSABI_IRIX: fprintf(f,"IRIX ABI\n"); break;
-        case ELFOSABI_FREEBSD: fprintf(f,"FreeBSD ABI\n"); break;
-        case ELFOSABI_TRU64: fprintf(f,"TRU64 UNIX ABI\n"); break;
-        case ELFOSABI_ARM: fprintf(f,"ARM Architecture ABI\n"); break;
-        case ELFOSABI_STANDALONE: fprintf(f,"Stand-alone (embedded) ABI\n"); break;
-        default: fprintf(f,"Unknown OS/ABI\n"); break;
+        case ELFOSABI_SYSV: fprintf(f, "UNIX - System V\n"); break;
+        case ELFOSABI_HPUX: fprintf(f, "HP-UX ABI\n"); break;
+        case ELFOSABI_NETBSD: fprintf(f, "NetBSD ABI\n"); break;
+        case ELFOSABI_LINUX: fprintf(f, "Linux ABI\n"); break;
+        case ELFOSABI_SOLARIS: fprintf(f, "Solaris ABI\n"); break;
+        case ELFOSABI_IRIX: fprintf(f, "IRIX ABI\n"); break;
+        case ELFOSABI_FREEBSD: fprintf(f, "FreeBSD ABI\n"); break;
+        case ELFOSABI_TRU64: fprintf(f, "TRU64 UNIX ABI\n"); break;
+        case ELFOSABI_ARM: fprintf(f, "ARM Architecture ABI\n"); break;
+        case ELFOSABI_STANDALONE: fprintf(f, "Stand-alone (embedded) ABI\n"); break;
+        default: fprintf(f, "Unknown OS/ABI\n"); break;
     }
 
-    fprintf(f,"ABI Version:\t\t\t   %d\n", elf_h.e_ident[EI_ABIVERSION]);
+    fprintf(f, "ABI Version:\t\t\t   %d\n", elf_h.e_ident[EI_ABIVERSION]);
 
-    fprintf(f,"Type:\t\t\t\t   ");
+    fprintf(f, "Type:\t\t\t\t   ");
     switch (elf_h.e_type){
-    	case ET_NONE: fprintf(f,"No file type\n"); break;
-    	case ET_REL: fprintf(f,"REL (Relocatable file)\n"); break;
-        case ET_EXEC: fprintf(f,"EXEC (Executable file)\n"); break;
-        case ET_DYN: fprintf(f,"SO (Shared object file)\n"); break;
-        case ET_CORE: fprintf(f,"Core file\n"); break;
+    	case ET_NONE: fprintf(f, "No file type\n"); break;
+    	case ET_REL: fprintf(f, "REL (Relocatable file)\n"); break;
+        case ET_EXEC: fprintf(f, "EXEC (Executable file)\n"); break;
+        case ET_DYN: fprintf(f, "SO (Shared object file)\n"); break;
+        case ET_CORE: fprintf(f, "Core file\n"); break;
         case ET_LOPROC:
-        case ET_HIPROC: fprintf(f,"Processor Specific\n"); break;
-        default: fprintf(f,"Unknown type\n"); break;
+        case ET_HIPROC: fprintf(f, "Processor Specific\n"); break;
+        default: fprintf(f, "Unknown type\n"); break;
     }
 
-    fprintf(f,"Machine:\t\t\t   ");
+    fprintf(f, "Machine:\t\t\t   ");
     switch (elf_h.e_machine){
-    	case EM_M32: fprintf(f,"AT&T WE 32100\n"); break;
-    	case EM_SPARC: fprintf(f,"SPARC\n"); break;
-    	case EM_386: fprintf(f,"Intel 80386\n"); break;
-    	case EM_68K: fprintf(f,"Motorola 68000\n"); break;
-    	case EM_88K: fprintf(f,"Motorola 88000\n"); break;
-    	case EM_860: fprintf(f,"Intel 80860\n"); break;
-    	case EM_MIPS: fprintf(f,"MIPS I Architecture\n"); break;
-    	case EM_MIPS_RS4_BE: fprintf(f,"MIPS RS4000 Big-Endian\n"); break;
-    	case EM_PARISC: fprintf(f,"Hewlett-Packard PA-RISC\n"); break;
-    	case EM_SPARC32PLUS: fprintf(f,"Enhanced instruction set SPARC\n"); break;
-    	case EM_PPC: fprintf(f,"PowerPC\n"); break;
-    	case EM_PPC64: fprintf(f,"64-bit PowerPC\n"); break;
-    	case EM_S390: fprintf(f,"IBM System/390 Processor\n"); break;
-    	case EM_ARM: fprintf(f,"ARM\n"); break;
-    	case EM_SH: fprintf(f,"Hitachi SH\n"); break;
-    	case EM_SPARCV9: fprintf(f,"SPARC Version 9\n"); break;
-    	case EM_IA_64: fprintf(f,"Intel IA-64 processor architecture\n"); break;
-    	case EM_X86_64: fprintf(f,"AMD x86-64 architecture\n"); break;
-    	case EM_VAX: fprintf(f,"Digital VAX\n"); break;
-    	default: fprintf(f,"%#x\n", elf_h.e_machine); break;
+    	case EM_M32: fprintf(f, "AT&T WE 32100\n"); break;
+    	case EM_SPARC: fprintf(f, "SPARC\n"); break;
+    	case EM_386: fprintf(f, "Intel 80386\n"); break;
+    	case EM_68K: fprintf(f, "Motorola 68000\n"); break;
+    	case EM_88K: fprintf(f, "Motorola 88000\n"); break;
+    	case EM_860: fprintf(f, "Intel 80860\n"); break;
+    	case EM_MIPS: fprintf(f, "MIPS I Architecture\n"); break;
+    	case EM_MIPS_RS4_BE: fprintf(f, "MIPS RS4000 Big-Endian\n"); break;
+    	case EM_PARISC: fprintf(f, "Hewlett-Packard PA-RISC\n"); break;
+    	case EM_SPARC32PLUS: fprintf(f, "Enhanced instruction set SPARC\n"); break;
+    	case EM_PPC: fprintf(f, "PowerPC\n"); break;
+    	case EM_PPC64: fprintf(f, "64-bit PowerPC\n"); break;
+    	case EM_S390: fprintf(f, "IBM System/390 Processor\n"); break;
+    	case EM_ARM: fprintf(f, "ARM\n"); break;
+    	case EM_SH: fprintf(f, "Hitachi SH\n"); break;
+    	case EM_SPARCV9: fprintf(f, "SPARC Version 9\n"); break;
+    	case EM_IA_64: fprintf(f, "Intel IA-64 processor architecture\n"); break;
+    	case EM_X86_64: fprintf(f, "AMD x86-64 architecture\n"); break;
+    	case EM_VAX: fprintf(f, "Digital VAX\n"); break;
+    	default: fprintf(f, "%#x\n", elf_h.e_machine); break;
     }
 
-    fprintf(f,"Version:\t\t\t   %#x\n",elf_h.e_version);
-    fprintf(f,"Entry point address:\t\t   0x%x\n",elf_h.e_entry);
-    fprintf(f,"Start of program headers:\t   %d (bytes into file)\n",elf_h.e_phoff);
-    fprintf(f,"Start of section headers:\t   %d (bytes into file)\n",elf_h.e_shoff);
-    fprintf(f,"Flags:\t\t\t\t   %#x, Version5 EABI\n",elf_h.e_flags);
-    fprintf(f,"Size of this header:\t\t   %d (bytes)\n",elf_h.e_ehsize);
-    fprintf(f,"Size of program headers:\t   %d (bytes)\n",elf_h.e_phentsize);
-    fprintf(f,"Number of program headers:\t   %d\n",elf_h.e_phnum);
-    fprintf(f,"Size of section headers:\t   %d (bytes)\n",elf_h.e_shentsize);
-    fprintf(f,"Number of section headers:\t   %d\n",elf_h.e_shnum);
-    fprintf(f,"Section header string table index: %d",elf_h.e_shstrndx);
+    fprintf(f, "Version:\t\t\t   %#x\n",elf_h.e_version);
+    fprintf(f, "Entry point address:\t\t   0x%x\n",elf_h.e_entry);
+    fprintf(f, "Start of program headers:\t   %d (bytes into file)\n",elf_h.e_phoff);
+    fprintf(f, "Start of section headers:\t   %d (bytes into file)\n",elf_h.e_shoff);
+    fprintf(f, "Flags:\t\t\t\t   %#x, Version5 EABI\n",elf_h.e_flags);
+    fprintf(f, "Size of this header:\t\t   %d (bytes)\n",elf_h.e_ehsize);
+    fprintf(f, "Size of program headers:\t   %d (bytes)\n",elf_h.e_phentsize);
+    fprintf(f, "Number of program headers:\t   %d\n",elf_h.e_phnum);
+    fprintf(f, "Size of section headers:\t   %d (bytes)\n",elf_h.e_shentsize);
+    fprintf(f, "Number of section headers:\t   %d\n",elf_h.e_shnum);
+    fprintf(f, "Section header string table index: %d",elf_h.e_shstrndx);
 }
 
 /**
@@ -201,18 +203,15 @@ void read_sections(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH) {
  * @param arr_elf_SH tableau d'en-têtes section
  */
 void print_sections_header(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH) {
-
     fprintf(fout, "Section Headers (%d), starting at offset 0x%X:\n", elf_h.e_shnum, elf_h.e_shoff);
     fprintf(fout, " [Nr]\tName\t\t\tType\t\tAddr\tOff\tSize\tES\tFlg\tLk\tInf\tAl");
     fprintf(fout, "\n");
 
     for (int i = 0; i < elf_h.e_shnum; i ++) {
-
-        Elf32_SH sectionHeader = arr_elf_SH[i];
-
         if (i > 9) fprintf(fout, " [%d]", i);
         else fprintf(fout, " [ %d]", i);
 
+        Elf32_SH sectionHeader = arr_elf_SH[i];
         fprintf(fout, "\t");
         fprintf(fout, "%-15.15s", read_from_shstrtab(sectionHeader.sh_name));
         fprintf(fout, "\t\t");
@@ -298,9 +297,7 @@ void print_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, 
     fprintf(fout, "\n");
 }
 
-
 /*  Etape 4 */
-
 /* Elf32 *elf récupéré dans l'étape 1 et Elf32_SH * arr_elf_SH récupéré à l'étape 2 */
 void read_symbol_section(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, size_t *nbSymboles){
     Elf32_SH symtab;
@@ -325,55 +322,36 @@ void read_symbol_section(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *
 void print_symbol(FILE *f, FILE *fout, Elf32_Sym elf_SYM) {
 	fprintf(fout, "\t%08x", elf_SYM.st_value);
 	fprintf(fout, "\t   0");
-	switch(ELF32_ST_TYPE(elf_SYM.st_info)){
-		case STT_OBJECT:
-		fprintf(fout, "\tOBJECT");break;
-		case STT_FUNC:
-		fprintf(fout, "\tFUNC");break;
-		case STT_SECTION:
-		fprintf(fout, "\tSECTION");break;
-		case STT_FILE:
-		fprintf(fout, "\tFILE");break;
-		case STT_LOPROC:
-		case STT_HIPROC:
-		case STT_NOTYPE:
-		default:
-		fprintf(fout, "\tNOTYPE");break;
+
+	switch (ELF32_ST_TYPE(elf_SYM.st_info)) {
+		case STT_OBJECT: fprintf(fout, "\tOBJECT"); break;
+		case STT_FUNC: fprintf(fout, "\tFUNC"); break;
+		case STT_SECTION: fprintf(fout, "\tSECTION"); break;
+		case STT_FILE: fprintf(fout, "\tFILE"); break;
+		default: fprintf(fout, "\tNOTYPE"); break;
 	}
-	switch(ELF32_ST_BIND(elf_SYM.st_info)){
-		case STB_LOCAL:
-		fprintf(fout,"\tLOCAL");break;
-		case STB_GLOBAL:
-		fprintf(fout,"\tGLOBAL");break;
-		case STB_WEAK:
-		case STB_LOPROC:
-		case STB_HIPROC:
-		default:
-		fprintf(fout,"\tUNKNOWN");break;
+	switch (ELF32_ST_BIND(elf_SYM.st_info)) {
+		case STB_LOCAL: fprintf(fout, "\tLOCAL"); break;
+		case STB_GLOBAL: fprintf(fout, "\tGLOBAL"); break;
+		default: fprintf(fout, "\tUNKNOWN"); break;
 	}
-	switch(ELF32_ST_VISIBILITY(elf_SYM.st_other)){
-		case STV_DEFAULT:
-		fprintf(fout,"\tDEFAULT");break;
-		case STV_INTERNAL:
-		fprintf(fout,"\tINTERNAL");break;
-		case STV_HIDDEN:
-		fprintf(fout,"\tHIDDEN");break;
-		case STV_PROTECTED:
-		fprintf(fout,"\tPROTECTED");break;
-		default :
-		fprintf(fout,"\tUNKNOWN");break;
+	switch (ELF32_ST_VISIBILITY(elf_SYM.st_other)) {
+		case STV_DEFAULT: fprintf(fout, "\tDEFAULT"); break;
+		case STV_INTERNAL: fprintf(fout, "\tINTERNAL"); break;
+		case STV_HIDDEN: fprintf(fout, "\tHIDDEN"); break;
+		case STV_PROTECTED: fprintf(fout, "\tPROTECTED"); break;
+		default: fprintf(fout, "\tUNKNOWN"); break;
 	}
-	switch(elf_SYM.st_shndx){
-		case SHN_ABS:
-		fprintf(fout,"\tABS");break;
-		case SHN_UNDEF:
-		fprintf(fout,"\tUND");break;
-		default :
-		fprintf(fout,"\t ");
-		if(elf_SYM.st_shndx<10){fprintf(fout," ");}
-		fprintf(fout,"%d",elf_SYM.st_shndx);break;
+	switch (elf_SYM.st_shndx) {
+		case SHN_ABS: fprintf(fout, "\tABS"); break;
+		case SHN_UNDEF: fprintf(fout, "\tUND"); break;
+		default: 
+            fprintf(fout, "\t ");
+            if (elf_SYM.st_shndx < 10) { fprintf(fout, " "); }
+            fprintf(fout, "%d", elf_SYM.st_shndx);
+            break;
 	}
-	fprintf(fout," %s", read_from_symtab(elf_SYM.st_name));
+	fprintf(fout, " %s", read_from_symtab(elf_SYM.st_name));
 	fprintf(fout, "\n");
 }
 
@@ -385,24 +363,20 @@ void print_symbols(FILE *f, FILE *fout, Elf32 elf_h, size_t nbSymboles, Elf32_Sy
 
     for(int i = 1; i < nbSymboles; i++){
         fprintf(fout, "   ");
-    	if (i > 9) fprintf(fout, " %d:", i);
-        else  fprintf(fout, "  %d:", i);
+    	if (i > 9) fprintf(fout, " %d:", i); 
+        else fprintf(fout, "  %d:", i);
     	print_symbol(f, fout, arr_elf_SYM[i]);
     }
 }
 
 /* lit un reloc */
 void read_reloc(FILE *f, Elf32_Rel *elf_REL, int soff) {
-    //fseek(f, soff, SEEK_SET);
-
     bread(&elf_REL->r_offset, sizeof(Elf32_Addr), 1, f);
     bread(&elf_REL->r_info, sizeof(uint32_t), 1, f);
 }
 
 /* lit un rela */
 void read_reloca(FILE *f, Elf32_Rela *elf_RELA, int soff) {
-    //fseek(f, soff, SEEK_SET);
-
     bread(&elf_RELA->r_offset, sizeof(Elf32_Addr), 1, f);
     bread(&elf_RELA->r_info, sizeof(uint32_t), 1, f);
     bread(&elf_RELA->r_addend, sizeof(int32_t), 1, f);
@@ -434,11 +408,12 @@ void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *ar
 
             int j = 0;
             for (j = 0; j < sec.sh_size/sizeof(Elf32_Rel); j++) {
-                fseek(f, sec.sh_offset+(j*8), SEEK_SET);
+                fseek(f, sec.sh_offset + (j * 8), SEEK_SET);
                 Elf32_Rel r;
                 read_reloc(f, &r, 0);
                 a_r.relocations[j] = r;
             }
+
             a_r.rnum = j;
             arr_elf_REL[r_i] = a_r;
             r_i++;
@@ -470,6 +445,7 @@ void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf
      */
 
     printf("");
+
     for (int i = 0; i < nbRel; i++) {
         Elf32_RelArray rel = arr_elf_REL[i];
         Elf32_SH sec = arr_elf_SH[rel.s_index];
@@ -484,37 +460,25 @@ void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf
             Elf32_Rel r = rel.relocations[j];
             printf("%08x ", r.r_offset);
             printf("%08x\t", r.r_info);
+
             switch (ELF32_R_TYPE(r.r_info)) {
-                case R_ARM_NONE:
-                    printf("R_ARM_NONE");break;
-                case R_ARM_PC24:
-                    printf("R_ARM_PC24");break;
-                case R_ARM_ABS32:
-                    printf("R_ARM_ABS32");break;
-                case R_ARM_CALL:
-                    printf("R_ARM_CALL");break;
-                case R_ARM_JUMP24:
-                    printf("R_ARM_JUMP24");break;
-                case R_ARM_V4BX:
-                    printf("R_ARM_V4BX");break;
-                case R_ARM_PREL31:
-                    printf("R_ARM_PREL31");break;
-                case R_ARM_MOVW_ABS_NC:
-                    printf("R_ARM_MOVW_ABS_NC");break;
-                case R_ARM_MOVT_ABS:
-                    printf("R_ARM_MOVT_ABS");break;
-                case R_ARM_THM_CALL:
-                    printf("R_ARM_THM_CALL");break;
-                case R_ARM_THM_JUMP24:
-                    printf("R_ARM_THM_JUMP24");break;
-                case R_ARM_THM_MOVW_ABS_NC:
-                    printf("R_ARM_MOVW_ABS_NC");break;
-                case R_ARM_THM_MOVT_ABS:
-                    printf("R_ARM_THM_MOVT_ABS");break;
-                default:
-                    printf("R_UNKNOWN");break;
+                case R_ARM_NONE: printf("R_ARM_NONE"); break;
+                case R_ARM_PC24: printf("R_ARM_PC24"); break;
+                case R_ARM_ABS32: printf("R_ARM_ABS32"); break;
+                case R_ARM_CALL: printf("R_ARM_CALL"); break;
+                case R_ARM_JUMP24: printf("R_ARM_JUMP24"); break;
+                case R_ARM_V4BX: printf("R_ARM_V4BX"); break;
+                case R_ARM_PREL31: printf("R_ARM_PREL31"); break;
+                case R_ARM_MOVW_ABS_NC: printf("R_ARM_MOVW_ABS_NC"); break;
+                case R_ARM_MOVT_ABS: printf("R_ARM_MOVT_ABS"); break;
+                case R_ARM_THM_CALL: printf("R_ARM_THM_CALL"); break;
+                case R_ARM_THM_JUMP24: printf("R_ARM_THM_JUMP24"); break;
+                case R_ARM_THM_MOVW_ABS_NC: printf("R_ARM_MOVW_ABS_NC"); break;
+                case R_ARM_THM_MOVT_ABS: printf("R_ARM_THM_MOVT_ABS"); break;
+                default: printf("R_UNKNOWN"); break;
             }
             printf("\t");
+
             Elf32_Sym sym = arr_elf_SYM[ELF32_R_SYM(r.r_info)];
             printf("%08X", sym.st_value);
             printf("\t");
