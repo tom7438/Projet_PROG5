@@ -245,6 +245,20 @@
 #define ELFOSABI_ARM	     97	/* ARM */
 #define ELFOSABI_STANDALONE 255	/* Standalone (embedded) application */
 
+#define 	R_ARM_NONE   0 
+#define 	R_ARM_PC24   1
+#define 	R_ARM_ABS32   2 
+#define 	R_ARM_CALL   28
+#define 	R_ARM_JUMP24   29
+#define 	R_ARM_V4BX   40
+#define 	R_ARM_PREL31   42
+#define 	R_ARM_MOVW_ABS_NC   43
+#define 	R_ARM_MOVT_ABS   44
+#define 	R_ARM_THM_CALL   10
+#define 	R_ARM_THM_JUMP24   30
+#define 	R_ARM_THM_MOVW_ABS_NC   47
+#define 	R_ARM_THM_MOVT_ABS   48
+
 #define SH_TABLE_MAX 100
 
 typedef uint32_t Elf32_Addr;
@@ -332,13 +346,17 @@ typedef struct {
 } Elf64_Sym;
 
 typedef struct {
-   int            s_index;
    Elf32_Addr     r_offset;
    uint32_t       r_info;
 } Elf32_Rel; 
 
 typedef struct {
-   int            s_index;
+   int s_index;
+   int rnum;
+   Elf32_Rel *relocations;
+} Elf32_RelArray;
+
+typedef struct {
    Elf32_Addr    r_offset;
    uint32_t    r_info;
    int32_t   r_addend;
@@ -369,8 +387,7 @@ void print_symbols(FILE *f, FILE *fout, Elf32 elf_h, size_t nbSymboles, Elf32_Sy
 void read_reloc(FILE *f, Elf32_Rel *elf_REL, int soff); /* lit un reloc */
 void read_reloca(FILE *f, Elf32_Rela *elf_RELA, int soff); /* lit un rela */
 /* appelle read_reloc et read_reloca pour stocker chaque relocations dans leurs tableaux respectifs */
-void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t *nbRel, size_t *nbRela);
+void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t *nbRel, size_t *nbRela);
 /* affichage de chaque relocs et reloca */
-void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t nbRel, size_t nbRela);
-
+void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, Elf32_RelArray *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t nbRel, size_t nbRela);
 #endif

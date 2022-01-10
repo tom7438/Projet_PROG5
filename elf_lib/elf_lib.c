@@ -401,7 +401,7 @@ void read_reloc(FILE *f, Elf32_Rel *elf_REL, int soff) {
 
 /* lit un rela */
 void read_reloca(FILE *f, Elf32_Rela *elf_RELA, int soff) {
-    fseek(f, soff, SEEK_SET);
+    //fseek(f, soff, SEEK_SET);
 
     bread(&elf_RELA->r_offset, sizeof(Elf32_Addr), 1, f);
     bread(&elf_RELA->r_info, sizeof(uint32_t), 1, f);
@@ -409,7 +409,7 @@ void read_reloca(FILE *f, Elf32_Rela *elf_RELA, int soff) {
 }
 
 /* appelle read_reloc et read_reloca pour stocker chaque relocations dans leurs tableaux respectifs */
-void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t *nbRel, size_t *nbRela) {
+void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t *nbRel, size_t *nbRela) {
     /**
      * TODO: fonction read_relocsa
      * les relocations & "rela" se trouvent dans les sections de type respectifs SHT_REL & SHT_RELA
@@ -424,26 +424,26 @@ void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Rel *arr_elf
     
     int r_i = 0;
     int ra_i = 0;
+    
     for (int i = 0; i < elf_h.e_shnum; i++) {
         Elf32_SH sec = arr_elf_SH[i];
         if (sec.sh_type == SHT_REL) {
-            fseek(f, sec.sh_offset, SEEK_SET);
-            Elf32_Rel r;
-            r.s_index = i;
-            for (int i = 0; i < sec.sh_size/sizeof(Elf32_Rel); i++) {
+            Elf32_RelArray a_r;
+            a_r.s_index = i;
+            a_r.relocations = malloc(MAX_STRTAB_LEN);
+
+            int j = 0;
+            for (j = 0; j < sec.sh_size/sizeof(Elf32_Rel); j++) {
+                fseek(f, sec.sh_offset+(j*8), SEEK_SET);
+                Elf32_Rel r;
                 read_reloc(f, &r, 0);
-                arr_elf_REL[r_i] = r;
-                r_i++;
+                a_r.relocations[j] = r;
             }
+            a_r.rnum = j;
+            arr_elf_REL[r_i] = a_r;
+            r_i++;
         } else if (sec.sh_type == SHT_RELA) {
-            fseek(f, sec.sh_offset, SEEK_SET);
-            Elf32_Rela r;
-            r.s_index = i;
-            for (int i = 0; i < sec.sh_size/sizeof(Elf32_Rela); i++) {
-                read_reloca(f, &r, 0);
-                arr_elf_RELA[ra_i] = r;
-                ra_i++;
-            }
+            /** TODO: Identique à en haut mais avec les REL **/
         }
     }
     *nbRel = r_i;
@@ -451,7 +451,7 @@ void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Rel *arr_elf
 }
 
 /* affichage de chaque relocs et reloca */
-void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t nbRel, size_t nbRela) {
+void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, Elf32_RelArray *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t nbRel, size_t nbRela) {
     /**
      * TODO: fonction print_relocs
      * Ici on affiche donc les REL et RELA de taille nbRel et nbRela.
@@ -469,4 +469,58 @@ void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Rel *arr_elf
      *
      */
 
+    printf("");
+    for (int i = 0; i < nbRel; i++) {
+        Elf32_RelArray rel = arr_elf_REL[i];
+        Elf32_SH sec = arr_elf_SH[rel.s_index];
+        printf("Relocation section '%s' at offset 0x%.3x contains %d entries:\n", 
+            read_from_shstrtab(sec.sh_name),
+            sec.sh_offset,
+            rel.rnum);
+        
+        printf(" Offset\t Info\t\tType\t\tSym.Value\tSym.Name\n");
+
+        for (int j = 0; j < rel.rnum; j++) {
+            Elf32_Rel r = rel.relocations[j];
+            printf("%08x ", r.r_offset);
+            printf("%08x\t", r.r_info);
+            switch (ELF32_R_TYPE(r.r_info)) {
+                case R_ARM_NONE:
+                    printf("R_ARM_NONE");break;
+                case R_ARM_PC24:
+                    printf("R_ARM_PC24");break;
+                case R_ARM_ABS32:
+                    printf("R_ARM_ABS32");break;
+                case R_ARM_CALL:
+                    printf("R_ARM_CALL");break;
+                case R_ARM_JUMP24:
+                    printf("R_ARM_JUMP24");break;
+                case R_ARM_V4BX:
+                    printf("R_ARM_V4BX");break;
+                case R_ARM_PREL31:
+                    printf("R_ARM_PREL31");break;
+                case R_ARM_MOVW_ABS_NC:
+                    printf("R_ARM_MOVW_ABS_NC");break;
+                case R_ARM_MOVT_ABS:
+                    printf("R_ARM_MOVT_ABS");break;
+                case R_ARM_THM_CALL:
+                    printf("R_ARM_THM_CALL");break;
+                case R_ARM_THM_JUMP24:
+                    printf("R_ARM_THM_JUMP24");break;
+                case R_ARM_THM_MOVW_ABS_NC:
+                    printf("R_ARM_MOVW_ABS_NC");break;
+                case R_ARM_THM_MOVT_ABS:
+                    printf("R_ARM_THM_MOVT_ABS");break;
+                default:
+                    printf("R_UNKNOWN");break;
+            }
+            printf("\t");
+            Elf32_Sym sym = arr_elf_SYM[ELF32_R_SYM(r.r_info)];
+            printf("%08X", sym.st_value);
+            printf("\t");
+            printf("%s", read_from_shstrtab(arr_elf_SH[sym.st_shndx].sh_name));
+            printf("\n");
+        }
+        printf("\n");
+    }
 }
