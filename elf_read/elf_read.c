@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
                     int found = 0;
                     int j = 0; 
                     for (j = 0; j < header.e_shnum; j++) {
-                        if (strcmp(read_name_from_STable(f, header, sections[header.e_shstrndx], sections[j].sh_name), nom_sec) == 0) {
+                        if (strcmp(read_name_from_STable(f, sections[header.e_shstrndx], sections[j].sh_name), nom_sec) == 0) {
                             found = 1;
                             break;
                         }

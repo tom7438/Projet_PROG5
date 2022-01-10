@@ -65,12 +65,11 @@ char* get_flags(uint32_t flags) {
  *        des chaînes de caractères
  * 
  * @param f flux
- * @param elf_h en-tête ELF
- * @param STable section ELF .shstrtab
+ * @param STable section ELF .shstrtab ou .strtab
  * @param st_name index de la section désirée
  * @return châine de caractères
  */
-char * read_name_from_STable(FILE *f, Elf32 elf_h, Elf32_SH STable, uint32_t st_name) {
+char * read_name_from_STable(FILE *f, Elf32_SH STable, uint32_t st_name) {
     strcpy(nomSection, "");
     fseek(f, STable.sh_offset + st_name, SEEK_SET);
     bread(&nomSection[0], sizeof(char), 1, f);
