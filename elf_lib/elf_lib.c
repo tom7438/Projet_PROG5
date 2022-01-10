@@ -343,9 +343,9 @@ void print_symbol(FILE *f, FILE *fout, Elf32_Sym elf_SYM) {
 		default: fprintf(fout, "\tUNKNOWN"); break;
 	}
 	switch (elf_SYM.st_shndx) {
-		case SHN_ABS: fprintf(fout, "\tABS"); break;
-		case SHN_UNDEF: fprintf(fout, "\tUND"); break;
-		default: 
+        case SHN_ABS: fprintf(fout, "\tABS"); break;
+        case SHN_UNDEF: fprintf(fout, "\tUND"); break;
+        default: 
             fprintf(fout, "\t ");
             if (elf_SYM.st_shndx < 10) { fprintf(fout, " "); }
             fprintf(fout, "%d", elf_SYM.st_shndx);
