@@ -446,7 +446,8 @@ void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Rel *arr_elf
             }
         }
     }
-
+    *nbRel = r_i;
+    *nbRela = ra_i; 
 }
 
 /* affichage de chaque relocs et reloca */
@@ -467,4 +468,5 @@ void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Rel *arr_elf
      *      - essayez d'afficher au moins le nom du symbole avec l'index de celui-ci, avec la fonction read_name_from_STable() ca doit être faisable
      *
      */
+
 }
