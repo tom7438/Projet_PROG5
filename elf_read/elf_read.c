@@ -18,7 +18,7 @@
 
 void usage(char *name) {
 	fprintf(stderr, "Usage:\n"
-		"%s [ -H | --help ] [ -h | -S | -x | -r ] file\n\n"
+		"%s [ -H | --help ] [ -h | -S | -s | -x <num|text> | -r ] file\n\n"
 		"Display information about the contents of ELF format files\n"
 		, name);
 }
@@ -147,7 +147,6 @@ int main(int argc, char *argv[]) {
                 print_relocs(f, header, sections, symbols, rel_array, rela_array, nbRelocs, nbRela);
             }
         }
-        
     }
 
 }

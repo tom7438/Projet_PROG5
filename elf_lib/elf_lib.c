@@ -280,8 +280,16 @@ void print_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, 
     fprintf(fout, "\n");
 }
 
-/*  Etape 4 */
-/* Elf32 *elf récupéré dans l'étape 1 et Elf32_SH * arr_elf_SH récupéré à l'étape 2 */
+/**
+ * @brief Lit la section des symboles (.symtab) et
+ *        retourne les symboles dans un tableau
+ * 
+ * @param f flux
+ * @param elf_h en-tête ELF
+ * @param arr_elf_SH tableau d'en-têtes section
+ * @param arr_elf_SYM tableau de symboles
+ * @param nbSymboles nb de symboles
+ */
 void read_symbol_section(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, size_t *nbSymboles){
     Elf32_SH symtab;
     // si pas de .symtab, erreur
@@ -297,11 +305,19 @@ void read_symbol_section(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *
         bread(&elf_SYM.st_info, sizeof(unsigned char), 1, f);
         bread(&elf_SYM.st_other, sizeof(unsigned char), 1, f);
         bread(&elf_SYM.st_shndx, sizeof(uint16_t), 1, f);
-        arr_elf_SYM[j]=elf_SYM;
+        arr_elf_SYM[j] = elf_SYM;
     }
     *nbSymboles = j;
 }
 
+/**
+ * @brief Affiche dans le flux de sortie spécifié les informations
+ *        du symbole
+ * 
+ * @param f flux
+ * @param fout flux de sortie
+ * @param elf_SYM symbole
+ */
 void print_symbol(FILE *f, FILE *fout, Elf32_Sym elf_SYM) {
     fprintf(fout, "\t%08x", elf_SYM.st_value);
     fprintf(fout, "\t   0");
@@ -338,6 +354,16 @@ void print_symbol(FILE *f, FILE *fout, Elf32_Sym elf_SYM) {
     fprintf(fout, "\n");
 }
 
+/**
+ * @brief Affiche dans le flux de sortie spécifié
+ *        les symboles (.symtab)
+ * 
+ * @param f flux
+ * @param fout flux de sortie
+ * @param elf_h en-tête ELF
+ * @param nbSymboles nb de symboles
+ * @param arr_elf_SYM tableau de symboles
+ */
 void print_symbols(FILE *f, FILE *fout, Elf32 elf_h, size_t nbSymboles, Elf32_Sym * arr_elf_SYM) {
     fprintf(fout, "\n");
     fprintf(fout, "Symbol table '.symtab' contains %lu entries:\n", nbSymboles);
@@ -352,33 +378,45 @@ void print_symbols(FILE *f, FILE *fout, Elf32 elf_h, size_t nbSymboles, Elf32_Sy
     }
 }
 
-/* lit un reloc */
-void read_reloc(FILE *f, Elf32_Rel *elf_REL, int soff) {
+/**
+ * @brief Lit les informations d'un "reloc"
+ *        et les retourne dans le pointeur
+ * 
+ * @param f flux
+ * @param elf_REL relocation
+ */
+void read_reloc(FILE *f, Elf32_Rel *elf_REL) {
     bread(&elf_REL->r_offset, sizeof(Elf32_Addr), 1, f);
     bread(&elf_REL->r_info, sizeof(uint32_t), 1, f);
 }
 
-/* lit un rela */
-void read_reloca(FILE *f, Elf32_Rela *elf_RELA, int soff) {
+/**
+ * @brief Lit les informations d'un "reloca"
+ *        et les retourne dans le pointeur
+ * 
+ * @param f flux
+ * @param elf_REL relocation"a"
+ */
+void read_reloca(FILE *f, Elf32_Rela *elf_RELA) {
     bread(&elf_RELA->r_offset, sizeof(Elf32_Addr), 1, f);
     bread(&elf_RELA->r_info, sizeof(uint32_t), 1, f);
     bread(&elf_RELA->r_addend, sizeof(int32_t), 1, f);
 }
 
-/* appelle read_reloc et read_reloca pour stocker chaque relocations dans leurs tableaux respectifs */
+/**
+ * @brief Lit toutes les relocations des sections de type 
+ *        SHT_REL & SHT_RELA et les retournent dans leurs
+ *        tableaux respectifs
+ * 
+ * @param f flux
+ * @param elf_h en-tête ELF
+ * @param arr_elf_SH tableau d'en-têtes section
+ * @param arr_elf_REL tableau de relocations SHT_REL
+ * @param arr_elf_RELA tableau de relocations SHT_RELA
+ * @param nbRel nb de relocations SHT_REL
+ * @param nbRela nb de relocations SHT_RELA
+ */
 void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *arr_elf_REL, Elf32_RelaArray *arr_elf_RELA, size_t *nbRel, size_t *nbRela) {
-    /**
-     * TODO: fonction read_relocsa
-     * les relocations & "rela" se trouvent dans les sections de type respectifs SHT_REL & SHT_RELA
-     * il faut donc lire ttes les sections et traiter uniquement celle de type SHT_REL & SHT_RELA
-     * puis ensuite appeler read_reloc ou read_reloc selon si on a un SHT_REL ou SHT_RELA
-     *
-     * ces deux fonctions (read_reloc/read_reloc) prennent un argument "soff" qui correspond au décalage
-     * depuis le début du fichier. Normalement cet argument correspond au sh_offset de la section en cours
-     * de traitement et il faut ensuite retourner le resultat de ces fonctions dans leurs tableaux respectifs:
-     *     - arr_elf_REL pour un SHT_REL, et arr_elf_RELA pour un SHT_RELA
-     */
-    
     int r_i = 0;
     int ra_i = 0;
     
@@ -393,7 +431,7 @@ void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *ar
             for (j = 0; j < sec.sh_size/sizeof(Elf32_Rel); j++) {
                 fseek(f, sec.sh_offset + (j * 8), SEEK_SET);
                 Elf32_Rel r;
-                read_reloc(f, &r, 0);
+                read_reloc(f, &r);
                 a_r.relocations[j] = r;
             }
 
@@ -401,7 +439,6 @@ void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *ar
             arr_elf_REL[r_i] = a_r;
             r_i++;
         } else if (sec.sh_type == SHT_RELA) {
-            /** TODO: Identique à en haut mais avec les REL **/
             Elf32_RelaArray a_r;
             a_r.s_index = i;
             a_r.relocations = malloc(MAX_STRTAB_LEN);
@@ -410,7 +447,7 @@ void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *ar
             for (j = 0; j < sec.sh_size/sizeof(Elf32_Rela); j++) {
                 fseek(f, sec.sh_offset + (j * 8), SEEK_SET);
                 Elf32_Rela r;
-                read_reloca(f, &r, 0);
+                read_reloca(f, &r);
                 a_r.relocations[j] = r;
             }
 
@@ -423,25 +460,20 @@ void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *ar
     *nbRela = ra_i; 
 }
 
-/* affichage de chaque relocs et reloca */
+/**
+ * @brief Affiche dans le flux de sortie (stdout) les sections
+ *        de relocations SHT_REL et SHT_RELA
+ * 
+ * @param f flux
+ * @param elf_h en-tête section
+ * @param arr_elf_SH tableau d'en-têtes section
+ * @param arr_elf_SYM tableau de symboles
+ * @param arr_elf_REL tableau de relocation SHT_REL
+ * @param arr_elf_RELA tableau de relocation SHT_RELA
+ * @param nbRel nb de relocations SHT_REL
+ * @param nbRela nb de relocations SHT_RELA
+ */
 void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, Elf32_RelArray *arr_elf_REL, Elf32_RelaArray *arr_elf_RELA, size_t nbRel, size_t nbRela) {
-    /**
-     * TODO: fonction print_relocs
-     * Ici on affiche donc les REL et RELA de taille nbRel et nbRela.
-     *
-     * INFO à afficher:
-     *      - pour REL:
-     *                  Offset, Info, Type (à recupérer depuis r_info), IndexSym (afficher juste l'index du symbole)
-     *      - pour RELA:
-     *                  Offset, Info, Type (à recupérer depuis r_info), IndexSym (afficher juste l'index du symbole), Addend
-     *
-     * INFO: voir doc (p. 36, paragraphe sur "r_info") pour obtenir les infos depuis r_info (index de la table de symbole & type de relocation)
-     *       NOTE: possible qu'il y ait donc besoin de la table des symboles en argument (voir affichage de readelf -r)
-     *             --> l'ajouter si le cas!!
-     *      - essayez d'afficher au moins le nom du symbole avec l'index de celui-ci, avec la fonction read_name_from_STable() ca doit être faisable
-     *
-     */
-
     printf("");
     for (int i = 0; i < nbRel; i++) {
         Elf32_RelArray rel = arr_elf_REL[i];

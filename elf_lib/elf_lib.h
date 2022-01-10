@@ -109,7 +109,6 @@
 #define SHF_TLS	            0x400
 #define STN_UNDEF             0
 
-
 /**  **/
 #define ELF32_ST_BIND(i)    ((i)>>4)
 #define ELF32_ST_TYPE(i)    ((i)&0xf)
@@ -327,6 +326,8 @@ typedef struct {
    uint64_t   sh_entsize;
 } Elf64_SH;
 
+// SYMBOLES
+
 typedef struct {
     uint32_t      st_name;
     Elf32_Addr    st_value;
@@ -344,6 +345,8 @@ typedef struct {
     unsigned char st_other;
     uint16_t      st_shndx;
 } Elf64_Sym;
+
+// RELOCATIONS 
 
 typedef struct {
    Elf32_Addr     r_offset;
@@ -375,27 +378,25 @@ void init_header(FILE *f, Elf32 *elf_h);
 void print_elf (FILE *f, Elf32 elf_h);
 
 /* Etape 2 */
-/* readelf -S */
+
 void read_sections(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH);
 void print_sections_header(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH);
 
 /* Etape 3 */
-/* readelf -x num */
+
 void read_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_SH *elf_SH);
 void print_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_SH *elf_SH);
 
 /* Etape 4 */
-/* readelf -s */
+
 void read_symbol_section(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, size_t *nbSymboles);
 void print_symbol(FILE *f, FILE *fout, Elf32_Sym elf_SYM);
 void print_symbols(FILE *f, FILE *fout, Elf32 elf_h, size_t nbSymboles, Elf32_Sym * arr_elf_SYM);
 
 /* Etape 5 */
-/* readelf -r */
-void read_reloc(FILE *f, Elf32_Rel *elf_REL, int soff); /* lit un reloc */
-void read_reloca(FILE *f, Elf32_Rela *elf_RELA, int soff); /* lit un rela */
-/* appelle read_reloc et read_reloca pour stocker chaque relocations dans leurs tableaux respectifs */
+
+void read_reloc(FILE *f, Elf32_Rel *elf_REL);
+void read_reloca(FILE *f, Elf32_Rela *elf_RELA);
 void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *arr_elf_REL, Elf32_RelaArray *arr_elf_RELA, size_t *nbRel, size_t *nbRela);
-/* affichage de chaque relocs et reloca */
 void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, Elf32_RelArray *arr_elf_REL, Elf32_RelaArray *arr_elf_RELA, size_t nbRel, size_t nbRela);
 #endif
