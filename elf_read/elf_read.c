@@ -29,7 +29,6 @@ char *sectionsAAfficher[100];
 int main(int argc, char *argv[]) {
     int opt;
 
-    /* à compléter */
 	struct option longopts[] = {
 		{ "header", no_argument, NULL, 'h' },
 		{ "sections", no_argument, NULL, 'S' },
@@ -43,7 +42,6 @@ int main(int argc, char *argv[]) {
     char *ELF_filename;
     int showHeader = 0, showSectionsH = 0, showSymbolTable = 0, showRelocs = 0;
 
-    /* à compléter */
     while ((opt = getopt_long(argc, argv, "hSsrx:H", longopts, NULL)) != -1) {
 		switch(opt) {
             case 'h': {
