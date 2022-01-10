@@ -421,6 +421,7 @@ void read_relocsa(FILE *f, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, siz
      * de traitement et il faut ensuite retourner le resultat de ces fonctions dans leurs tableaux respectifs:
      *     - arr_elf_REL pour un SHT_REL, et arr_elf_RELA pour un SHT_RELA
      */
+    
 }
 
 /* affichage de chaque relocs et reloca */

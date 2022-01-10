@@ -16,3 +16,4 @@ void read_symbol_names(FILE *f, Elf32_SH STable);
 char * read_from_shstrtab(uint32_t st_name);
 char * read_from_symtab(uint32_t st_name);
 int get_section_by_name(char *name, int shnum, Elf32_SH *sections, Elf32_SH *section);
+int get_section_by_type(int type, int shnum, Elf32_SH *sections, Elf32_SH *section);

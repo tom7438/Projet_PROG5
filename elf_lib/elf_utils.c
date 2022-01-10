@@ -135,13 +135,33 @@ void read_symbol_names(FILE *f, Elf32_SH STable) {
 }
 
 /**
+ * @brief Recherche une section par son type
+ * 
+ * @param type type de la section recherché
+ * @param shnum nombre de sections totales
+ * @param sections tableau des sections
+ * @param section  section retournée
+ * @return int (1 si trouvée, 0 sinon)
+ */
+int get_section_by_type(int type, int shnum, Elf32_SH *sections, Elf32_SH *section) {
+    int i = 0;
+    for (i = 0; i < shnum; i++) {
+        if (sections[i].sh_type == type) {
+            *section = sections[i];
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/**
  * @brief Recherche une section par son nom
  * 
  * @param name nom de la section recherchée
  * @param shnum nombre de sections totales
  * @param sections tableau des sections
  * @param section  section retournée
- * @return int (0 si pas trouvée, 1 si trouvée)
+ * @return int (1 si trouvée, 0 sinon)
  */
 int get_section_by_name(char *name, int shnum, Elf32_SH *sections, Elf32_SH *section) {
     int i = 0;
