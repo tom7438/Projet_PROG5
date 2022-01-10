@@ -114,17 +114,8 @@ int main(int argc, char *argv[]) {
                     if (num >= 0 && num < header.e_shnum) print_data_section(f, stdout, header, sections, &sections[num]);
                     else printf("-- No section number %d was found", num);
                 } else {
-                    // si chaîne de caractères, on cherche l'index de la section nom_sec
-                    // dans le tableau
-                    int found = 0;
-                    int j = 0; 
-                    for (j = 0; j < header.e_shnum; j++) {
-                        if (strcmp(read_from_shstrtab(sections[j].sh_name), nom_sec) == 0) {
-                            found = 1;
-                            break;
-                        }
-                    }
-                    if (found == 1) print_data_section(f, stdout, header, sections, &sections[j]);
+                    Elf32_SH section;
+                    if (get_section_by_name(nom_sec, header.e_shnum, sections, &section)) print_data_section(f, stdout, header, sections, &section);
                     else printf("-- No section named '%s' was found", nom_sec);
                 }
                 printf("\n");
@@ -135,17 +126,11 @@ int main(int argc, char *argv[]) {
             Elf32_Sym symbols[SH_TABLE_MAX];
             size_t nbSymboles;
             read_symbol_section(f, header, sections, symbols, &nbSymboles);
-
-            int strtab = -1;
-            for (int k=0; k < header.e_shnum; k++){
-                if(sections[k].sh_type == SHT_STRTAB){
-                    strtab = k;
-                    break;
-                }
-            }
-            if (strtab > -1) {
+            
+            Elf32_SH strtab;
+            if (get_section_by_name(".strtab", header.e_shnum, sections, &strtab)) {
                 // -- lecture des noms de symboles avant affichage 
-                read_symbol_names(f, sections[strtab]);
+                read_symbol_names(f, strtab);
                 print_symbols(f, stdout, header, nbSymboles, symbols);
             }
         }
