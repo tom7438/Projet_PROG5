@@ -88,10 +88,13 @@ int main(int argc, char *argv[]) {
 
         Elf32 header;
         Elf32_SH sections[SH_TABLE_MAX];
+        Elf32_Sym symbols[SH_TABLE_MAX];
+        size_t nbSymboles;
         init_header(f, &header);
         read_sections(f, header, sections);
         // -- lecture des noms de sections
         read_section_names(f, sections[header.e_shstrndx]);
+        read_symbol_section(f, header, sections, symbols, &nbSymboles);
 
         if (showHeader) {
             print_elf(stdout, header);
@@ -121,10 +124,6 @@ int main(int argc, char *argv[]) {
         }
 
         if (showSymbolTable) {
-            Elf32_Sym symbols[SH_TABLE_MAX];
-            size_t nbSymboles;
-            read_symbol_section(f, header, sections, symbols, &nbSymboles);
-            
             Elf32_SH strtab;
             if (get_section_by_name(".strtab", header.e_shnum, sections, &strtab)) {
                 // -- lecture des noms de symboles avant affichage 
@@ -138,8 +137,15 @@ int main(int argc, char *argv[]) {
             Elf32_Rela rela[SH_TABLE_MAX];
             size_t nbRelocs;
             size_t nbRela;
-            read_relocsa(f, relocations, rela, &nbRelocs, &nbRela);
-            print_relocs(f, header, sections, relocations, rela, nbRelocs, nbRela);
+
+            Elf32_SH strtab;
+            if (get_section_by_name(".strtab", header.e_shnum, sections, &strtab)) {
+                // -- lecture des noms de symboles avant affichage 
+                read_symbol_names(f, strtab);
+                read_relocsa(f, header, sections, relocations, rela, &nbRelocs, &nbRela);
+                
+                print_relocs(f, header, sections, relocations, rela, nbRelocs, nbRela);
+            }
         }
         
     }

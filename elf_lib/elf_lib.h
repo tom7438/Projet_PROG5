@@ -118,6 +118,10 @@
 #define ELF32_ST_VISIBILITY(o)       ((o)&0x3)
 #define ELF64_ST_VISIBILITY(o)       ((o)&0x3)
 
+#define ELF32_R_SYM(info)             ((info)>>8)
+#define ELF32_R_TYPE(info)            ((unsigned char)(info))
+#define ELF32_R_INFO(sym, type)       (((sym)<<8)+(unsigned char)(type))
+
 /* ELF32_ST_BIND */
 #define STB_LOCAL       0
 #define STB_GLOBAL      1
@@ -363,7 +367,7 @@ void print_symbols(FILE *f, FILE *fout, Elf32 elf_h, size_t nbSymboles, Elf32_Sy
 void read_reloc(FILE *f, Elf32_Rel *elf_REL, int soff); /* lit un reloc */
 void read_reloca(FILE *f, Elf32_Rela *elf_RELA, int soff); /* lit un rela */
 /* appelle read_reloc et read_reloca pour stocker chaque relocations dans leurs tableaux respectifs */
-void read_relocsa(FILE *f, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t *nbRel, size_t *nbRela);
+void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t *nbRel, size_t *nbRela);
 /* affichage de chaque relocs et reloca */
 void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t nbRel, size_t nbRela);
 

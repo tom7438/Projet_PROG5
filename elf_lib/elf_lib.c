@@ -237,7 +237,7 @@ void print_sections_header(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_S
             default: fprintf(fout, "%x", sectionHeader.sh_type); break;
         }
         fprintf(fout, "\t");
-        fprintf(fout, "%06x", sectionHeader.sh_addr);
+        fprintf(fout, "%08x", sectionHeader.sh_addr);
         fprintf(fout, "\t");
         fprintf(fout, "%06x", sectionHeader.sh_offset);
         fprintf(fout, "\t");
@@ -393,7 +393,7 @@ void print_symbols(FILE *f, FILE *fout, Elf32 elf_h, size_t nbSymboles, Elf32_Sy
 
 /* lit un reloc */
 void read_reloc(FILE *f, Elf32_Rel *elf_REL, int soff) {
-    fseek(f, soff, SEEK_SET);
+    //fseek(f, soff, SEEK_SET);
 
     bread(&elf_REL->r_offset, sizeof(Elf32_Addr), 1, f);
     bread(&elf_REL->r_info, sizeof(uint32_t), 1, f);
@@ -409,7 +409,7 @@ void read_reloca(FILE *f, Elf32_Rela *elf_RELA, int soff) {
 }
 
 /* appelle read_reloc et read_reloca pour stocker chaque relocations dans leurs tableaux respectifs */
-void read_relocsa(FILE *f, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t *nbRel, size_t *nbRela) {
+void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t *nbRel, size_t *nbRela) {
     /**
      * TODO: fonction read_relocsa
      * les relocations & "rela" se trouvent dans les sections de type respectifs SHT_REL & SHT_RELA
@@ -422,6 +422,19 @@ void read_relocsa(FILE *f, Elf32_Rel *arr_elf_REL, Elf32_Rela *arr_elf_RELA, siz
      *     - arr_elf_REL pour un SHT_REL, et arr_elf_RELA pour un SHT_RELA
      */
     
+    for (int i = 0; i < elf_h.e_shnum; i++) {
+        Elf32_SH sec = arr_elf_SH[i];
+        if (sec.sh_type == SHT_REL) {
+            fseek(f, sec.sh_offset, SEEK_SET);
+            Elf32_Rel r;
+            for (int i = 0; i < sec.sh_size/sizeof(Elf32_Rel); i++) {
+                read_reloc(f, &r, 0);
+
+            }
+        }
+    }
+
+
 }
 
 /* affichage de chaque relocs et reloca */
