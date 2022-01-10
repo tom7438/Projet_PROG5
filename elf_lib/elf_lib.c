@@ -21,12 +21,8 @@
  * @return en-tête ELF dans le pointeur spécifié
  */
 void init_header(FILE *f, Elf32 * elf_h){
-    size_t tmp; // pour la valeur de retour de fread
-
-    // ---
     unsigned char tab_e_ident[EI_NIDENT];
-    tmp = fread(&tab_e_ident, EI_NIDENT, 1, f);
-    assert(tmp);
+    assert(fread(&tab_e_ident, EI_NIDENT, 1, f));
 
     if (tab_e_ident[EI_MAG0] != ELFMAG0 || 
         tab_e_ident[EI_MAG1] != ELFMAG1 || tab_e_ident[EI_MAG2] != ELFMAG2 || 
@@ -43,32 +39,19 @@ void init_header(FILE *f, Elf32 * elf_h){
         bread_isBigEndian = 1;
     }
 
-    tmp = bread(&elf_h->e_type, sizeof(uint16_t), 1, f);
-    assert(tmp);
-    tmp = bread(&elf_h->e_machine, sizeof(uint16_t), 1, f);
-    assert(tmp);
-    tmp = bread(&elf_h->e_version, sizeof(uint32_t), 1, f);
-    assert(tmp);
-    tmp = bread(&elf_h->e_entry, sizeof(Elf32_Addr), 1, f);
-    assert(tmp);
-    tmp = bread(&elf_h->e_phoff, sizeof(Elf32_Off), 1, f);
-    assert(tmp);
-    tmp = bread(&elf_h->e_shoff, sizeof(Elf32_Off), 1, f);
-    assert(tmp);
-    tmp = bread(&elf_h->e_flags, sizeof(uint32_t), 1, f);
-    assert(tmp);
-    tmp = bread(&elf_h->e_ehsize, sizeof(uint16_t), 1, f);
-    assert(tmp);
-    tmp = bread(&elf_h->e_phentsize, sizeof(uint16_t), 1, f);
-    assert(tmp);
-    tmp = bread(&elf_h->e_phnum, sizeof(uint16_t), 1, f);
-    assert(tmp);
-    tmp = bread(&elf_h->e_shentsize, sizeof(uint16_t), 1, f);
-    assert(tmp);
-    tmp = bread(&elf_h->e_shnum, sizeof(uint16_t), 1, f);
-    assert(tmp);
-    tmp = bread(&elf_h->e_shstrndx, sizeof(uint16_t), 1, f);
-    assert(tmp);
+    assert(bread(&elf_h->e_type, sizeof(uint16_t), 1, f));
+    assert(bread(&elf_h->e_machine, sizeof(uint16_t), 1, f));
+    assert(bread(&elf_h->e_version, sizeof(uint32_t), 1, f));
+    assert(bread(&elf_h->e_entry, sizeof(Elf32_Addr), 1, f));
+    assert(bread(&elf_h->e_phoff, sizeof(Elf32_Off), 1, f));
+    assert(bread(&elf_h->e_shoff, sizeof(Elf32_Off), 1, f));
+    assert(bread(&elf_h->e_flags, sizeof(uint32_t), 1, f));
+    assert(bread(&elf_h->e_ehsize, sizeof(uint16_t), 1, f));
+    assert(bread(&elf_h->e_phentsize, sizeof(uint16_t), 1, f));
+    assert(bread(&elf_h->e_phnum, sizeof(uint16_t), 1, f));
+    assert(bread(&elf_h->e_shentsize, sizeof(uint16_t), 1, f));
+    assert(bread(&elf_h->e_shnum, sizeof(uint16_t), 1, f));
+    assert(bread(&elf_h->e_shstrndx, sizeof(uint16_t), 1, f));
 }
 
 /**
@@ -383,7 +366,7 @@ void read_reloca(FILE *f, Elf32_Rela *elf_RELA, int soff) {
 }
 
 /* appelle read_reloc et read_reloca pour stocker chaque relocations dans leurs tableaux respectifs */
-void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t *nbRel, size_t *nbRela) {
+void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *arr_elf_REL, Elf32_RelaArray *arr_elf_RELA, size_t *nbRel, size_t *nbRela) {
     /**
      * TODO: fonction read_relocsa
      * les relocations & "rela" se trouvent dans les sections de type respectifs SHT_REL & SHT_RELA
@@ -419,6 +402,21 @@ void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *ar
             r_i++;
         } else if (sec.sh_type == SHT_RELA) {
             /** TODO: Identique à en haut mais avec les REL **/
+            Elf32_RelaArray a_r;
+            a_r.s_index = i;
+            a_r.relocations = malloc(MAX_STRTAB_LEN);
+
+            int j = 0;
+            for (j = 0; j < sec.sh_size/sizeof(Elf32_Rela); j++) {
+                fseek(f, sec.sh_offset + (j * 8), SEEK_SET);
+                Elf32_Rela r;
+                read_reloca(f, &r, 0);
+                a_r.relocations[j] = r;
+            }
+
+            a_r.rnum = j;
+            arr_elf_RELA[ra_i] = a_r;
+            ra_i++;
         }
     }
     *nbRel = r_i;
@@ -426,7 +424,7 @@ void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *ar
 }
 
 /* affichage de chaque relocs et reloca */
-void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, Elf32_RelArray *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t nbRel, size_t nbRela) {
+void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, Elf32_RelArray *arr_elf_REL, Elf32_RelaArray *arr_elf_RELA, size_t nbRel, size_t nbRela) {
     /**
      * TODO: fonction print_relocs
      * Ici on affiche donc les REL et RELA de taille nbRel et nbRela.
@@ -482,6 +480,52 @@ void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf
             printf("%08X", sym.st_value);
             printf("\t");
             printf("%s", read_from_shstrtab(arr_elf_SH[sym.st_shndx].sh_name));
+            printf("\n");
+        }
+        printf("\n");
+    }
+
+    // -- "rela" (apparemment pas nécessaire?)
+
+    for (int i = 0; i < nbRela; i++) {
+        Elf32_RelaArray rel = arr_elf_RELA[i];
+        Elf32_SH sec = arr_elf_SH[rel.s_index];
+        printf("Relocation section '%s' at offset 0x%.3x contains %d entries:\n", 
+            read_from_shstrtab(sec.sh_name),
+            sec.sh_offset,
+            rel.rnum);
+        
+        printf(" Offset\t Info\t\tType\t\tSym.Value\tSym.Name\tAddend\n");
+
+        for (int j = 0; j < rel.rnum; j++) {
+            Elf32_Rela r = rel.relocations[j];
+            printf("%08x ", r.r_offset);
+            printf("%08x\t", r.r_info);
+
+            switch (ELF32_R_TYPE(r.r_info)) {
+                case R_ARM_NONE: printf("R_ARM_NONE"); break;
+                case R_ARM_PC24: printf("R_ARM_PC24"); break;
+                case R_ARM_ABS32: printf("R_ARM_ABS32"); break;
+                case R_ARM_CALL: printf("R_ARM_CALL"); break;
+                case R_ARM_JUMP24: printf("R_ARM_JUMP24"); break;
+                case R_ARM_V4BX: printf("R_ARM_V4BX"); break;
+                case R_ARM_PREL31: printf("R_ARM_PREL31"); break;
+                case R_ARM_MOVW_ABS_NC: printf("R_ARM_MOVW_ABS_NC"); break;
+                case R_ARM_MOVT_ABS: printf("R_ARM_MOVT_ABS"); break;
+                case R_ARM_THM_CALL: printf("R_ARM_THM_CALL"); break;
+                case R_ARM_THM_JUMP24: printf("R_ARM_THM_JUMP24"); break;
+                case R_ARM_THM_MOVW_ABS_NC: printf("R_ARM_MOVW_ABS_NC"); break;
+                case R_ARM_THM_MOVT_ABS: printf("R_ARM_THM_MOVT_ABS"); break;
+                default: printf("R_UNKNOWN"); break;
+            }
+            printf("\t");
+
+            Elf32_Sym sym = arr_elf_SYM[ELF32_R_SYM(r.r_info)];
+            printf("%08X", sym.st_value);
+            printf("\t");
+            printf("%s", read_from_shstrtab(arr_elf_SH[sym.st_shndx].sh_name));
+            printf("\t");
+            printf("%d", r.r_addend);
             printf("\n");
         }
         printf("\n");

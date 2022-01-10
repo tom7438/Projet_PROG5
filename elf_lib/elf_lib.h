@@ -356,11 +356,19 @@ typedef struct {
    Elf32_Rel *relocations;
 } Elf32_RelArray;
 
+// ---
+
 typedef struct {
    Elf32_Addr    r_offset;
    uint32_t    r_info;
    int32_t   r_addend;
 } Elf32_Rela;
+
+typedef struct {
+   int s_index;
+   int rnum;
+   Elf32_Rela *relocations;
+} Elf32_RelaArray;
 
 /* Etape 1 */
 void init_header(FILE *f, Elf32 *elf_h);
@@ -387,7 +395,7 @@ void print_symbols(FILE *f, FILE *fout, Elf32 elf_h, size_t nbSymboles, Elf32_Sy
 void read_reloc(FILE *f, Elf32_Rel *elf_REL, int soff); /* lit un reloc */
 void read_reloca(FILE *f, Elf32_Rela *elf_RELA, int soff); /* lit un rela */
 /* appelle read_reloc et read_reloca pour stocker chaque relocations dans leurs tableaux respectifs */
-void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t *nbRel, size_t *nbRela);
+void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *arr_elf_REL, Elf32_RelaArray *arr_elf_RELA, size_t *nbRel, size_t *nbRela);
 /* affichage de chaque relocs et reloca */
-void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, Elf32_RelArray *arr_elf_REL, Elf32_Rela *arr_elf_RELA, size_t nbRel, size_t nbRela);
+void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, Elf32_RelArray *arr_elf_REL, Elf32_RelaArray *arr_elf_RELA, size_t nbRel, size_t nbRela);
 #endif
