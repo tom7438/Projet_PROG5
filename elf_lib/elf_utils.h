@@ -4,6 +4,7 @@
 
 #include "elf_lib/elf_lib.h"
 #include <string.h>
+#define MAX_STRTAB_LEN 300
 
 extern int bread_isBigEndian;
 

@@ -9,8 +9,8 @@
 char str_flags[5];
 int bread_isBigEndian = 0;
 
-char shstrtab[300];
-char symstrtab[300];
+char shstrtab[MAX_STRTAB_LEN];
+char symstrtab[MAX_STRTAB_LEN];
 
 /**
  * @brief Lit un certain nombre d'octets à partir d'un flux.
@@ -65,15 +65,15 @@ char* get_flags(uint32_t flags) {
 }
 
 /**
- * @brief Lit le nom de la section depuis la table
- *        des chaînes de caractères correspondante
+ * @brief Lit le nom de la section d'index st_name depuis 
+ *        la table des chaînes de caractères correspondante
  * 
  * @param st_name index de la section désirée
  * @return châine de caractères
  */
 char * read_from_shstrtab(uint32_t st_name) {
     int i = st_name;
-    char *nSection = malloc(100);
+    char *nSection = malloc(MAX_STRTAB_LEN);
 
     while (shstrtab[i] != '\0') {
         nSection[i - st_name] = shstrtab[i];
@@ -83,15 +83,15 @@ char * read_from_shstrtab(uint32_t st_name) {
 }
 
 /**
- * @brief Lit le nom du symbole depuis la table
- *        des chaînes de caractères correspondante
+ * @brief Lit le nom de symbole d'index st_name depuis 
+ *        la table des chaînes de caractères correspondante
  * 
  * @param st_name index du nom de symbole
  * @return châine de caractères
  */
 char * read_from_symtab(uint32_t st_name) {
     int i = st_name;
-    char *nSection = malloc(100);
+    char *nSection = malloc(MAX_STRTAB_LEN);
 
     while (symstrtab[i] != '\0') {
         nSection[i - st_name] = symstrtab[i];
