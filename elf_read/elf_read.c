@@ -90,10 +90,13 @@ int main(int argc, char *argv[]) {
         Elf32_SH sections[SH_TABLE_MAX];
         Elf32_Sym symbols[SH_TABLE_MAX];
         size_t nbSymboles;
+        // -- lecture de l'en-tête
         init_header(f, &header);
+        // -- lecture des sections
         read_sections(f, header, sections);
         // -- lecture des noms de sections
         read_section_names(f, sections[header.e_shstrndx]);
+        // -- lecture des symboles
         read_symbol_section(f, header, sections, symbols, &nbSymboles);
 
         if (showHeader) {
