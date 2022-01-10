@@ -118,8 +118,8 @@ void print_elf(FILE *f, Elf32 elf_h) {
 
     fprintf(f, "Type:\t\t\t\t   ");
     switch (elf_h.e_type){
-    	case ET_NONE: fprintf(f, "No file type\n"); break;
-    	case ET_REL: fprintf(f, "REL (Relocatable file)\n"); break;
+        case ET_NONE: fprintf(f, "No file type\n"); break;
+        case ET_REL: fprintf(f, "REL (Relocatable file)\n"); break;
         case ET_EXEC: fprintf(f, "EXEC (Executable file)\n"); break;
         case ET_DYN: fprintf(f, "SO (Shared object file)\n"); break;
         case ET_CORE: fprintf(f, "Core file\n"); break;
@@ -130,26 +130,26 @@ void print_elf(FILE *f, Elf32 elf_h) {
 
     fprintf(f, "Machine:\t\t\t   ");
     switch (elf_h.e_machine){
-    	case EM_M32: fprintf(f, "AT&T WE 32100\n"); break;
-    	case EM_SPARC: fprintf(f, "SPARC\n"); break;
-    	case EM_386: fprintf(f, "Intel 80386\n"); break;
-    	case EM_68K: fprintf(f, "Motorola 68000\n"); break;
-    	case EM_88K: fprintf(f, "Motorola 88000\n"); break;
-    	case EM_860: fprintf(f, "Intel 80860\n"); break;
-    	case EM_MIPS: fprintf(f, "MIPS I Architecture\n"); break;
-    	case EM_MIPS_RS4_BE: fprintf(f, "MIPS RS4000 Big-Endian\n"); break;
-    	case EM_PARISC: fprintf(f, "Hewlett-Packard PA-RISC\n"); break;
-    	case EM_SPARC32PLUS: fprintf(f, "Enhanced instruction set SPARC\n"); break;
-    	case EM_PPC: fprintf(f, "PowerPC\n"); break;
-    	case EM_PPC64: fprintf(f, "64-bit PowerPC\n"); break;
-    	case EM_S390: fprintf(f, "IBM System/390 Processor\n"); break;
-    	case EM_ARM: fprintf(f, "ARM\n"); break;
-    	case EM_SH: fprintf(f, "Hitachi SH\n"); break;
-    	case EM_SPARCV9: fprintf(f, "SPARC Version 9\n"); break;
-    	case EM_IA_64: fprintf(f, "Intel IA-64 processor architecture\n"); break;
-    	case EM_X86_64: fprintf(f, "AMD x86-64 architecture\n"); break;
-    	case EM_VAX: fprintf(f, "Digital VAX\n"); break;
-    	default: fprintf(f, "%#x\n", elf_h.e_machine); break;
+        case EM_M32: fprintf(f, "AT&T WE 32100\n"); break;
+        case EM_SPARC: fprintf(f, "SPARC\n"); break;
+        case EM_386: fprintf(f, "Intel 80386\n"); break;
+        case EM_68K: fprintf(f, "Motorola 68000\n"); break;
+        case EM_88K: fprintf(f, "Motorola 88000\n"); break;
+        case EM_860: fprintf(f, "Intel 80860\n"); break;
+        case EM_MIPS: fprintf(f, "MIPS I Architecture\n"); break;
+        case EM_MIPS_RS4_BE: fprintf(f, "MIPS RS4000 Big-Endian\n"); break;
+        case EM_PARISC: fprintf(f, "Hewlett-Packard PA-RISC\n"); break;
+        case EM_SPARC32PLUS: fprintf(f, "Enhanced instruction set SPARC\n"); break;
+        case EM_PPC: fprintf(f, "PowerPC\n"); break;
+        case EM_PPC64: fprintf(f, "64-bit PowerPC\n"); break;
+        case EM_S390: fprintf(f, "IBM System/390 Processor\n"); break;
+        case EM_ARM: fprintf(f, "ARM\n"); break;
+        case EM_SH: fprintf(f, "Hitachi SH\n"); break;
+        case EM_SPARCV9: fprintf(f, "SPARC Version 9\n"); break;
+        case EM_IA_64: fprintf(f, "Intel IA-64 processor architecture\n"); break;
+        case EM_X86_64: fprintf(f, "AMD x86-64 architecture\n"); break;
+        case EM_VAX: fprintf(f, "Digital VAX\n"); break;
+        default: fprintf(f, "%#x\n", elf_h.e_machine); break;
     }
 
     fprintf(f, "Version:\t\t\t   %#x\n",elf_h.e_version);
@@ -320,29 +320,29 @@ void read_symbol_section(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *
 }
 
 void print_symbol(FILE *f, FILE *fout, Elf32_Sym elf_SYM) {
-	fprintf(fout, "\t%08x", elf_SYM.st_value);
-	fprintf(fout, "\t   0");
+    fprintf(fout, "\t%08x", elf_SYM.st_value);
+    fprintf(fout, "\t   0");
 
-	switch (ELF32_ST_TYPE(elf_SYM.st_info)) {
-		case STT_OBJECT: fprintf(fout, "\tOBJECT"); break;
-		case STT_FUNC: fprintf(fout, "\tFUNC"); break;
-		case STT_SECTION: fprintf(fout, "\tSECTION"); break;
-		case STT_FILE: fprintf(fout, "\tFILE"); break;
-		default: fprintf(fout, "\tNOTYPE"); break;
-	}
-	switch (ELF32_ST_BIND(elf_SYM.st_info)) {
-		case STB_LOCAL: fprintf(fout, "\tLOCAL"); break;
-		case STB_GLOBAL: fprintf(fout, "\tGLOBAL"); break;
-		default: fprintf(fout, "\tUNKNOWN"); break;
-	}
-	switch (ELF32_ST_VISIBILITY(elf_SYM.st_other)) {
-		case STV_DEFAULT: fprintf(fout, "\tDEFAULT"); break;
-		case STV_INTERNAL: fprintf(fout, "\tINTERNAL"); break;
-		case STV_HIDDEN: fprintf(fout, "\tHIDDEN"); break;
-		case STV_PROTECTED: fprintf(fout, "\tPROTECTED"); break;
-		default: fprintf(fout, "\tUNKNOWN"); break;
-	}
-	switch (elf_SYM.st_shndx) {
+    switch (ELF32_ST_TYPE(elf_SYM.st_info)) {
+        case STT_OBJECT: fprintf(fout, "\tOBJECT"); break;
+        case STT_FUNC: fprintf(fout, "\tFUNC"); break;
+        case STT_SECTION: fprintf(fout, "\tSECTION"); break;
+        case STT_FILE: fprintf(fout, "\tFILE"); break;
+        default: fprintf(fout, "\tNOTYPE"); break;
+    }
+    switch (ELF32_ST_BIND(elf_SYM.st_info)) {
+        case STB_LOCAL: fprintf(fout, "\tLOCAL"); break;
+        case STB_GLOBAL: fprintf(fout, "\tGLOBAL"); break;
+        default: fprintf(fout, "\tUNKNOWN"); break;
+    }
+    switch (ELF32_ST_VISIBILITY(elf_SYM.st_other)) {
+        case STV_DEFAULT: fprintf(fout, "\tDEFAULT"); break;
+        case STV_INTERNAL: fprintf(fout, "\tINTERNAL"); break;
+        case STV_HIDDEN: fprintf(fout, "\tHIDDEN"); break;
+        case STV_PROTECTED: fprintf(fout, "\tPROTECTED"); break;
+        default: fprintf(fout, "\tUNKNOWN"); break;
+    }
+    switch (elf_SYM.st_shndx) {
         case SHN_ABS: fprintf(fout, "\tABS"); break;
         case SHN_UNDEF: fprintf(fout, "\tUND"); break;
         default:
@@ -350,22 +350,22 @@ void print_symbol(FILE *f, FILE *fout, Elf32_Sym elf_SYM) {
             if (elf_SYM.st_shndx < 10) { fprintf(fout, " "); }
             fprintf(fout, "%d", elf_SYM.st_shndx);
             break;
-	}
-	fprintf(fout, " %s", read_from_symtab(elf_SYM.st_name));
-	fprintf(fout, "\n");
+    }
+    fprintf(fout, " %s", read_from_symtab(elf_SYM.st_name));
+    fprintf(fout, "\n");
 }
 
 void print_symbols(FILE *f, FILE *fout, Elf32 elf_h, size_t nbSymboles, Elf32_Sym * arr_elf_SYM) {
-	fprintf(fout, "\n");
-	fprintf(fout, "Symbol table '.symtab' contains %lu entries:\n", nbSymboles);
-	fprintf(fout, "   Num:\tValue\t\tSize\tType\tBind\tVis\tNdx Name\n");
-	fprintf(fout, "     0: 00000000\t   0\tNOTYPE\tLOCAL\tDEFAULT\tUND\n");
+    fprintf(fout, "\n");
+    fprintf(fout, "Symbol table '.symtab' contains %lu entries:\n", nbSymboles);
+    fprintf(fout, "   Num:\tValue\t\tSize\tType\tBind\tVis\tNdx Name\n");
+    fprintf(fout, "     0: 00000000\t   0\tNOTYPE\tLOCAL\tDEFAULT\tUND\n");
 
-    for(int i = 1; i < nbSymboles; i++){
+    for (int i = 1; i < nbSymboles; i++) {  
         fprintf(fout, "   ");
-    	if (i > 9) fprintf(fout, " %d:", i); 
+        if (i > 9) fprintf(fout, " %d:", i); 
         else fprintf(fout, "  %d:", i);
-    	print_symbol(f, fout, arr_elf_SYM[i]);
+        print_symbol(f, fout, arr_elf_SYM[i]);
     }
 }
 
@@ -445,7 +445,6 @@ void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf
      */
 
     printf("");
-
     for (int i = 0; i < nbRel; i++) {
         Elf32_RelArray rel = arr_elf_REL[i];
         Elf32_SH sec = arr_elf_SH[rel.s_index];
