@@ -102,7 +102,7 @@ char * read_from_symtab(uint32_t st_name) {
 
 /**
  * @brief Lit tt les noms de sections depuis la section
- *        spécfiée et les renvoi dans le tableau `shstrtab`
+ *        `shstrtab` et les renvoi dans le tableau "shrstrtab"
  * 
  * @param f flux
  * @param STable section `shstrtab`
@@ -119,10 +119,10 @@ void read_section_names(FILE *f, Elf32_SH STable) {
 
 /**
  * @brief Lit tt les noms de symboles depuis la section
- *        spécfiée et les renvoi dans le tableau `symstrtab`
+ *        `strtab` et les renvoi dans un tableau "symstrtab"
  * 
  * @param f flux
- * @param STable section `shstrtab`
+ * @param STable section `strtab`
  * @return
  */
 void read_symbol_names(FILE *f, Elf32_SH STable) {
