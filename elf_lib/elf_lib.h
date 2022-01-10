@@ -374,6 +374,7 @@ typedef struct {
 } Elf32_RelaArray;
 
 /* Etape 1 */
+
 void init_header(FILE *f, Elf32 *elf_h);
 void print_elf (FILE *f, Elf32 elf_h);
 

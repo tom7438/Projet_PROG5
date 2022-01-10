@@ -1,5 +1,5 @@
 /***
- * elf_lib: mini librarie qui contient toutes les fonctions
+ * elf_lib: librarie qui contient toutes les fonctions
  *          de lecture sur un fichier format ELF.
  *
  * À remplir au fur et à mesure des étapes.
