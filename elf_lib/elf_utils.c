@@ -3,10 +3,14 @@
 **/
 
 #include "elf_lib/elf_utils.h"
+#include <unistd.h>
+#include <stdlib.h>
 
 char str_flags[5];
-char nomSection[30];
 int bread_isBigEndian = 0;
+
+char shstrtab[300];
+char symstrtab[300];
 
 /**
  * @brief Lit un certain nombre d'octets à partir d'un flux.
@@ -62,24 +66,70 @@ char* get_flags(uint32_t flags) {
 
 /**
  * @brief Lit le nom de la section depuis la table
- *        des chaînes de caractères
+ *        des chaînes de caractères correspondante
  * 
- * @param f flux
- * @param STable section ELF .shstrtab ou .strtab
  * @param st_name index de la section désirée
  * @return châine de caractères
  */
-char * read_name_from_STable(FILE *f, Elf32_SH STable, uint32_t st_name) {
-    strcpy(nomSection, "");
-    fseek(f, STable.sh_offset + st_name, SEEK_SET);
-    bread(&nomSection[0], sizeof(char), 1, f);
-    char c = ' ';
-    int i = 1;
+char * read_from_shstrtab(uint32_t st_name) {
+    int i = st_name;
+    char *nSection = malloc(100);
 
-    while (c != '\0') { 
-        bread(&nomSection[i], sizeof(char), 1, f);
-        c = nomSection[i];
+    while (shstrtab[i] != '\0') {
+        nSection[i - st_name] = shstrtab[i];
         i++;
     }
-    return nomSection;
+    return nSection;
+}
+
+/**
+ * @brief Lit le nom du symbole depuis la table
+ *        des chaînes de caractères correspondante
+ * 
+ * @param st_name index du nom de symbole
+ * @return châine de caractères
+ */
+char * read_from_symtab(uint32_t st_name) {
+    int i = st_name;
+    char *nSection = malloc(100);
+
+    while (symstrtab[i] != '\0') {
+        nSection[i - st_name] = symstrtab[i];
+        i++;
+    }
+    return nSection;
+}
+
+/**
+ * @brief Lit tt les noms de sections depuis la section
+ *        spécfiée et les renvoi dans le tableau `shstrtab`
+ * 
+ * @param f flux
+ * @param STable section `shstrtab`
+ * @return
+ */
+void read_section_names(FILE *f, Elf32_SH STable) {
+    int s = 0;
+    fseek(f, STable.sh_offset, SEEK_SET);
+    while (s != STable.sh_size) {
+        bread(&shstrtab[s], sizeof(char), 1, f);
+        s++;
+    }
+}
+
+/**
+ * @brief Lit tt les noms de symboles depuis la section
+ *        spécfiée et les renvoi dans le tableau `symstrtab`
+ * 
+ * @param f flux
+ * @param STable section `shstrtab`
+ * @return
+ */
+void read_symbol_names(FILE *f, Elf32_SH STable) {
+    int s = 0;
+    fseek(f, STable.sh_offset, SEEK_SET);
+    while (s != STable.sh_size) {
+        bread(&symstrtab[s], sizeof(char), 1, f);
+        s++;
+    }
 }

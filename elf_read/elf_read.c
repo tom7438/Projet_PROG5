@@ -92,6 +92,8 @@ int main(int argc, char *argv[]) {
         Elf32_SH sections[SH_TABLE_MAX];
         init_header(f, &header);
         read_sections(f, header, sections);
+        // -- lecture des noms de sections
+        read_section_names(f, sections[header.e_shstrndx]);
 
         if (showHeader) {
             print_elf(stdout, header);
@@ -117,7 +119,7 @@ int main(int argc, char *argv[]) {
                     int found = 0;
                     int j = 0; 
                     for (j = 0; j < header.e_shnum; j++) {
-                        if (strcmp(read_name_from_STable(f, sections[header.e_shstrndx], sections[j].sh_name), nom_sec) == 0) {
+                        if (strcmp(read_from_shstrtab(sections[j].sh_name), nom_sec) == 0) {
                             found = 1;
                             break;
                         }
@@ -141,7 +143,11 @@ int main(int argc, char *argv[]) {
                     break;
                 }
             }
-            if (strtab > -1) print_symbols(f, stdout, header, sections[strtab], nbSymboles, symbols);
+            if (strtab > -1) {
+                // -- lecture des noms de symboles avant affichage 
+                read_symbol_names(f, sections[strtab]);
+                print_symbols(f, stdout, header, nbSymboles, symbols);
+            }
         }
 
         if (showRelocs) {
