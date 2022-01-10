@@ -422,18 +422,30 @@ void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Rel *arr_elf
      *     - arr_elf_REL pour un SHT_REL, et arr_elf_RELA pour un SHT_RELA
      */
     
+    int r_i = 0;
+    int ra_i = 0;
     for (int i = 0; i < elf_h.e_shnum; i++) {
         Elf32_SH sec = arr_elf_SH[i];
         if (sec.sh_type == SHT_REL) {
             fseek(f, sec.sh_offset, SEEK_SET);
             Elf32_Rel r;
+            r.s_index = i;
             for (int i = 0; i < sec.sh_size/sizeof(Elf32_Rel); i++) {
                 read_reloc(f, &r, 0);
-
+                arr_elf_REL[r_i] = r;
+                r_i++;
+            }
+        } else if (sec.sh_type == SHT_RELA) {
+            fseek(f, sec.sh_offset, SEEK_SET);
+            Elf32_Rela r;
+            r.s_index = i;
+            for (int i = 0; i < sec.sh_size/sizeof(Elf32_Rela); i++) {
+                read_reloca(f, &r, 0);
+                arr_elf_RELA[ra_i] = r;
+                ra_i++;
             }
         }
     }
-
 
 }
 

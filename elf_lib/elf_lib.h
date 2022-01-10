@@ -332,11 +332,13 @@ typedef struct {
 } Elf64_Sym;
 
 typedef struct {
-   Elf32_Addr    r_offset;
-   uint32_t    r_info;
+   int            s_index;
+   Elf32_Addr     r_offset;
+   uint32_t       r_info;
 } Elf32_Rel; 
 
 typedef struct {
+   int            s_index;
    Elf32_Addr    r_offset;
    uint32_t    r_info;
    int32_t   r_addend;
