@@ -187,7 +187,7 @@ void read_sections(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH) {
  */
 void print_sections_header(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH) {
     fprintf(fout, "Section Headers (%d), starting at offset 0x%X:\n", elf_h.e_shnum, elf_h.e_shoff);
-    fprintf(fout, " [Nr]\tName\t\t\tType\t\tAddr\tOff\tSize\tES\tFlg\tLk\tInf\tAl");
+    fprintf(fout, " [Nr]\tName\t\t\tType\t\tAddr\t Off\tSize\tES\tFlg\tLk\tInf\tAl");
     fprintf(fout, "\n");
 
     for (int i = 0; i < elf_h.e_shnum; i ++) {
@@ -220,7 +220,7 @@ void print_sections_header(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_S
         }
         fprintf(fout, "\t");
         fprintf(fout, "%08x", sectionHeader.sh_addr);
-        fprintf(fout, "\t");
+        fprintf(fout, " ");
         fprintf(fout, "%06x", sectionHeader.sh_offset);
         fprintf(fout, "\t");
         fprintf(fout, "%06x", sectionHeader.sh_size);
