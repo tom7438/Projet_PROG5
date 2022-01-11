@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
                 int num = 0;
                 int result = sscanf(nom_sec, "%d", &num);
                 if (result == 1) {
-                    if (num >= 0 && num < header.e_shnum) print_data_section(f, stdout, header, sections, &sections[num]);
+                    if (num >= 0 && num < header.e_shnum) print_data_section(stdout, header, sections, &sections[num]);
                     else printf("-- No section number %d was found", num);
                 } else {
                     Elf32_SH section;
@@ -131,7 +131,7 @@ int main(int argc, char *argv[]) {
             if (get_section_by_name(".strtab", header.e_shnum, sections, &strtab)) {
                 // -- lecture des noms de symboles avant affichage 
                 read_symbol_names(f, strtab);
-                print_symbols(f, stdout, header, nbSymboles, symbols);
+                print_symbols(stdout, header, nbSymboles, symbols);
                 printf("\n");
             }
         }
