@@ -464,7 +464,6 @@ void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *ar
  * @brief Affiche dans le flux de sortie (stdout) les sections
  *        de relocations SHT_REL et SHT_RELA
  * 
- * @param f flux
  * @param elf_h en-tête section
  * @param arr_elf_SH tableau d'en-têtes section
  * @param arr_elf_SYM tableau de symboles
@@ -473,7 +472,7 @@ void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *ar
  * @param nbRel nb de relocations SHT_REL
  * @param nbRela nb de relocations SHT_RELA
  */
-void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, Elf32_RelArray *arr_elf_REL, Elf32_RelaArray *arr_elf_RELA, size_t nbRel, size_t nbRela) {
+void print_relocs(Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, Elf32_RelArray *arr_elf_REL, Elf32_RelaArray *arr_elf_RELA, size_t nbRel, size_t nbRela) {
     for (int i = 0; i < nbRel; i++) {
         Elf32_RelArray rel = arr_elf_REL[i];
         Elf32_SH sec = arr_elf_SH[rel.s_index];
