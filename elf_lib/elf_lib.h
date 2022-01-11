@@ -399,5 +399,5 @@ void print_symbols(FILE *fout, Elf32 elf_h, size_t nbSymboles, Elf32_Sym * arr_e
 void read_reloc(FILE *f, Elf32_Rel *elf_REL);
 void read_reloca(FILE *f, Elf32_Rela *elf_RELA);
 void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *arr_elf_REL, Elf32_RelaArray *arr_elf_RELA, size_t *nbRel, size_t *nbRela);
-void print_relocs(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, Elf32_RelArray *arr_elf_REL, Elf32_RelaArray *arr_elf_RELA, size_t nbRel, size_t nbRela);
+void print_relocs(Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, Elf32_RelArray *arr_elf_REL, Elf32_RelaArray *arr_elf_RELA, size_t nbRel, size_t nbRela);
 #endif
