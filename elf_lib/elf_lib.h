@@ -389,7 +389,6 @@ void read_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, E
 void print_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_SH *elf_SH);
 
 /* Etape 4 */
-/* Essai pour push sur VScode */
 
 void read_symbol_section(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, size_t *nbSymboles);
 void print_symbol(FILE *fout, Elf32_Sym elf_SYM);
