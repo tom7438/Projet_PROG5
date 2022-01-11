@@ -509,7 +509,11 @@ void print_relocs(Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, Elf
             Elf32_Sym sym = arr_elf_SYM[ELF32_R_SYM(r.r_info)];
             printf("%08X", sym.st_value);
             printf("\t");
-            printf("%s", read_from_shstrtab(arr_elf_SH[sym.st_shndx].sh_name));
+            if (sym.st_info == STT_SECTION) {
+                printf("%s", read_from_shstrtab(arr_elf_SH[sym.st_shndx].sh_name));
+            } else {
+                printf("%s", read_from_symtab(sym.st_name));
+            }
             printf("\n");
         }
         printf("\n");
