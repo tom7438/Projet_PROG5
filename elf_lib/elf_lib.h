@@ -258,7 +258,7 @@
 #define 	R_ARM_THM_MOVW_ABS_NC   47
 #define 	R_ARM_THM_MOVT_ABS   48
 
-#define SH_TABLE_MAX 100
+#define SH_TABLE_MAX 500
 
 typedef uint32_t Elf32_Addr;
 typedef uint32_t Elf32_Off;

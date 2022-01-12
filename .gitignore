@@ -17,5 +17,6 @@ config.guess
 config.sub
 .dirstamp
 read_elf
+reloc_elf
 .DS_Store
 .vscode

@@ -88,7 +88,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = ARM_runner_example$(EXEEXT) read_elf$(EXEEXT)
+bin_PROGRAMS = ARM_runner_example$(EXEEXT) read_elf$(EXEEXT) \
+	reloc_elf$(EXEEXT)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/hostsubdir.m4 \
@@ -118,6 +119,11 @@ am_read_elf_OBJECTS = elf_lib/elf_lib.$(OBJEXT) \
 read_elf_OBJECTS = $(am_read_elf_OBJECTS)
 read_elf_LDADD = $(LDADD)
 read_elf_DEPENDENCIES =
+am_reloc_elf_OBJECTS = elf_lib/elf_lib.$(OBJEXT) \
+	elf_lib/elf_utils.$(OBJEXT) elf_reloc/elf_reloc.$(OBJEXT)
+reloc_elf_OBJECTS = $(am_reloc_elf_OBJECTS)
+reloc_elf_LDADD = $(LDADD)
+reloc_elf_DEPENDENCIES =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -138,7 +144,8 @@ am__depfiles_remade = ./$(DEPDIR)/ARM_runner_example.Po \
 	./$(DEPDIR)/debug.Po ./$(DEPDIR)/gdb_protocol.Po \
 	./$(DEPDIR)/scanner.Po ./$(DEPDIR)/util.Po \
 	elf_lib/$(DEPDIR)/elf_lib.Po elf_lib/$(DEPDIR)/elf_utils.Po \
-	elf_read/$(DEPDIR)/elf_read.Po
+	elf_read/$(DEPDIR)/elf_read.Po \
+	elf_reloc/$(DEPDIR)/elf_reloc.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -158,8 +165,10 @@ am__v_LEX_ = $(am__v_LEX_@AM_DEFAULT_V@)
 am__v_LEX_0 = @echo "  LEX     " $@;
 am__v_LEX_1 = 
 YLWRAP = $(top_srcdir)/build-aux/ylwrap
-SOURCES = $(ARM_runner_example_SOURCES) $(read_elf_SOURCES)
-DIST_SOURCES = $(ARM_runner_example_SOURCES) $(read_elf_SOURCES)
+SOURCES = $(ARM_runner_example_SOURCES) $(read_elf_SOURCES) \
+	$(reloc_elf_SOURCES)
+DIST_SOURCES = $(ARM_runner_example_SOURCES) $(read_elf_SOURCES) \
+	$(reloc_elf_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -366,6 +375,7 @@ LDADD = -lpthread
 AUTOMAKE_OPTIONS = subdir-objects
 SUBDIRS = . Examples_loader
 read_elf_SOURCES = elf_lib/elf_lib.h elf_lib/elf_lib.c elf_lib/elf_utils.h elf_lib/elf_utils.c elf_read/elf_read.c
+reloc_elf_SOURCES = elf_lib/elf_lib.h elf_lib/elf_lib.c elf_lib/elf_utils.h elf_lib/elf_utils.c elf_reloc/elf_reloc.c
 COMMON = debug.h debug.c util.h util.c
 EXTRA_DIST = filtre.pl sample_run.sh
 SIMULATOR_INTERFACE = csapp.h csapp.c scanner.h scanner.l gdb_protocol.h gdb_protocol.c arm_simulator_interface.h arm_simulator_interface.c
@@ -475,11 +485,24 @@ elf_read/elf_read.$(OBJEXT): elf_read/$(am__dirstamp) \
 read_elf$(EXEEXT): $(read_elf_OBJECTS) $(read_elf_DEPENDENCIES) $(EXTRA_read_elf_DEPENDENCIES) 
 	@rm -f read_elf$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(read_elf_OBJECTS) $(read_elf_LDADD) $(LIBS)
+elf_reloc/$(am__dirstamp):
+	@$(MKDIR_P) elf_reloc
+	@: > elf_reloc/$(am__dirstamp)
+elf_reloc/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) elf_reloc/$(DEPDIR)
+	@: > elf_reloc/$(DEPDIR)/$(am__dirstamp)
+elf_reloc/elf_reloc.$(OBJEXT): elf_reloc/$(am__dirstamp) \
+	elf_reloc/$(DEPDIR)/$(am__dirstamp)
+
+reloc_elf$(EXEEXT): $(reloc_elf_OBJECTS) $(reloc_elf_DEPENDENCIES) $(EXTRA_reloc_elf_DEPENDENCIES) 
+	@rm -f reloc_elf$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(reloc_elf_OBJECTS) $(reloc_elf_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 	-rm -f elf_lib/*.$(OBJEXT)
 	-rm -f elf_read/*.$(OBJEXT)
+	-rm -f elf_reloc/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
@@ -494,6 +517,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@elf_lib/$(DEPDIR)/elf_lib.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@elf_lib/$(DEPDIR)/elf_utils.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@elf_read/$(DEPDIR)/elf_read.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@elf_reloc/$(DEPDIR)/elf_reloc.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -860,6 +884,8 @@ distclean-generic:
 	-rm -f elf_lib/$(am__dirstamp)
 	-rm -f elf_read/$(DEPDIR)/$(am__dirstamp)
 	-rm -f elf_read/$(am__dirstamp)
+	-rm -f elf_reloc/$(DEPDIR)/$(am__dirstamp)
+	-rm -f elf_reloc/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -881,6 +907,7 @@ distclean: distclean-recursive
 	-rm -f elf_lib/$(DEPDIR)/elf_lib.Po
 	-rm -f elf_lib/$(DEPDIR)/elf_utils.Po
 	-rm -f elf_read/$(DEPDIR)/elf_read.Po
+	-rm -f elf_reloc/$(DEPDIR)/elf_reloc.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -938,6 +965,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f elf_lib/$(DEPDIR)/elf_lib.Po
 	-rm -f elf_lib/$(DEPDIR)/elf_utils.Po
 	-rm -f elf_read/$(DEPDIR)/elf_read.Po
+	-rm -f elf_reloc/$(DEPDIR)/elf_reloc.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
