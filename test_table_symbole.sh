@@ -22,9 +22,9 @@ do
   diff cstm_l std_l > diffout
 
   for line in $(cat diffout)
-  do
-    echo $line # ligne a effacer si affichage plus concis souhaite 
-    if [[ $line != ">" ]] && [[ $line != *"a"*  ]] && [[ $line != "."*  ]]
+  do  
+    echo $line # ligne a effacer si affichage plus concis souhaite
+    if [[ $line != ">" ]] && [[ $line != "."*  ]] && [[ $line != [0-9]*a[0-9]* ]]
     then
       echo ERROR
       err=$(($err+1))
