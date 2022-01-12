@@ -23,6 +23,87 @@ void usage(char *name) {
 		, name);
 }
 
+
+void calculation (int* buff, int S, int A , int P, int T, int type) {
+	switch (type) {
+					case R_ARM_NONE: break;
+					//case R_ARM_ABS8:  *buff = S + A; break; //Add to MACRO
+					//case R_ARM_ABS16: *buff =  S + A ; break; //Add to MACRO
+					case R_ARM_ABS32: *buff = (S+A) | T; break;
+					case R_ARM_CALL:  *buff = ((S + A) | T) - P ; break;
+					case R_ARM_JUMP24: *buff = ((S + A) | T) - P; break;
+					default: printf("R_UNKNOWN"); break;
+	}
+}
+
+int reloc (FILE *f, Elf32_Sym *arr_elf_SYM, Elf32_RelArray rel_Arr,Elf32_SH* arr_elf_sh ) {
+	
+	Elf32_SH sec = arr_elf_sh[rel_Arr.s_index];
+	Elf32_Rel r;
+	Elf32_Sym sym;
+	int debut_sym;
+	int debut_sec;
+	uint32_t reloc_data;
+	get_section_by_name(read_from_shstrtab(sec.sh_name)+4,10,arr_elf_sh,&sec);
+	int S,A,P,T;
+
+
+	for (int k = 0; k < SH_TABLE_MAX; k++) {
+		// Initialiser pour l'instance de reloc
+		r = rel_Arr.relocations[k];
+		sym = arr_elf_SYM[ELF32_R_SYM(r.r_info)];
+		debut_sym = arr_elf_sh[sym.st_shndx].sh_offset + sym.st_value; 
+		debut_sec = sec.sh_offset + r.r_offset;
+		if (strcmp ("" , read_from_shstrtab(arr_elf_sh[sym.st_shndx].sh_name)) == 0) return 0;
+		
+		// Trouver la table du symbole et la où il se trouve 
+		S = debut_sym;
+		A = 0; // Calcul de A (Pas compris): https://developer.arm.com/documentation/ihi0044/latest
+		P = debut_sec;
+		T = 0;
+		if (ELF32_ST_TYPE(sym.st_info) == STT_FUNC) T = 1;
+		calculation(&debut_sym,S,A,P,T,ELF32_R_TYPE(r.r_info));
+		
+		//Lire la donnée à reloc
+		fseek(f, debut_sym, SEEK_SET); // Addresse à copier 
+		reloc_data = fread(&reloc_data,sizeof(uint32_t),1,f);
+		
+		//debug
+		printf("sec à reloc = %s\n",read_from_shstrtab(sec.sh_name));
+		printf("sec contenant la data = %s\n",read_from_shstrtab(arr_elf_sh[sym.st_shndx].sh_name));
+		printf("symbole = %.8x\n",reloc_data);
+		printf("Offset = %d\n",r.r_offset);
+		fseek(f, debut_sec -16, SEEK_SET);// On regarde les modifs uniquement le premier mot de la seconde ligne changé
+		printf("\nAVANT\n");
+		for (int i = 0; i < 32; i++) {
+			if (i%4 == 0) printf(" ");
+			if (i%16 == 0) printf(" \n0x%08x ", i);
+			printf("%.2x", fgetc(f));
+			
+		}    printf("\nAVANT\n");
+		
+		// Reecrire la donnée à relocaliser		
+		fseek(f, debut_sec, SEEK_SET);//addresse à réecrire
+		fwrite(&reloc_data,sizeof(uint32_t),1,f);
+		fflush(f);
+		fseek(f, debut_sec -16, SEEK_SET);
+
+		//debug
+		printf("\nAPRES\n");
+		for (int i = 0; i < 32; i++) {
+			if (i%4 == 0) printf(" ");
+			if (i%16 == 0) printf(" \n0x%08x ", i);
+			printf("%.2x", fgetc(f));
+			
+		}    printf("\nAPRES \n");
+
+		
+	}
+    
+    return 1;
+}
+
+
 int sectionsAAfficher_s = 0;
 char *sectionsAAfficher[100];
 
@@ -148,6 +229,11 @@ int main(int argc, char *argv[]) {
                 read_symbol_names(f, strtab);
                 read_relocsa(f, header, sections, rel_array, rela_array, &nbRelocs, &nbRela);
                 print_relocs(header, sections, symbols, rel_array, rela_array, nbRelocs, nbRela);
+                
+                FILE *f2 = fopen(ELF_filename, "r+");
+                for (int k =0; k<nbRelocs;k++){ 
+					reloc (f2, symbols,rel_array[k],sections );
+				} 
             }
         }
     }
