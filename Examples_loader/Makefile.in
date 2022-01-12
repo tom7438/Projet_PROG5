@@ -90,11 +90,7 @@ POST_UNINSTALL = :
 @HAVE_ARM_COMPILER_TRUE@	example2$(EXEEXT) example3$(EXEEXT) \
 @HAVE_ARM_COMPILER_TRUE@	example4$(EXEEXT) example6$(EXEEXT) \
 @HAVE_ARM_COMPILER_TRUE@	example7$(EXEEXT) example8$(EXEEXT) \
-@HAVE_ARM_COMPILER_TRUE@	example9$(EXEEXT) example10$(EXEEXT) \
-@HAVE_ARM_COMPILER_TRUE@	example11$(EXEEXT) example12$(EXEEXT) \
-@HAVE_ARM_COMPILER_TRUE@	example13$(EXEEXT) example14$(EXEEXT) \
-@HAVE_ARM_COMPILER_TRUE@	example15$(EXEEXT) example16$(EXEEXT) \
-@HAVE_ARM_COMPILER_TRUE@	example17$(EXEEXT)
+@HAVE_ARM_COMPILER_TRUE@	example16$(EXEEXT)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/../m4/ax_check_compile_flag.m4 \
@@ -114,38 +110,10 @@ am__example1_SOURCES_DIST = example1.s
 @HAVE_ARM_COMPILER_TRUE@am_example1_OBJECTS = example1.$(OBJEXT)
 example1_OBJECTS = $(am_example1_OBJECTS)
 example1_LDADD = $(LDADD)
-am__example10_SOURCES_DIST = example10.s
-@HAVE_ARM_COMPILER_TRUE@am_example10_OBJECTS = example10.$(OBJEXT)
-example10_OBJECTS = $(am_example10_OBJECTS)
-example10_LDADD = $(LDADD)
-am__example11_SOURCES_DIST = example11.s
-@HAVE_ARM_COMPILER_TRUE@am_example11_OBJECTS = example11.$(OBJEXT)
-example11_OBJECTS = $(am_example11_OBJECTS)
-example11_LDADD = $(LDADD)
-am__example12_SOURCES_DIST = example12.s
-@HAVE_ARM_COMPILER_TRUE@am_example12_OBJECTS = example12.$(OBJEXT)
-example12_OBJECTS = $(am_example12_OBJECTS)
-example12_LDADD = $(LDADD)
-am__example13_SOURCES_DIST = example13.s
-@HAVE_ARM_COMPILER_TRUE@am_example13_OBJECTS = example13.$(OBJEXT)
-example13_OBJECTS = $(am_example13_OBJECTS)
-example13_LDADD = $(LDADD)
-am__example14_SOURCES_DIST = example14.s
-@HAVE_ARM_COMPILER_TRUE@am_example14_OBJECTS = example14.$(OBJEXT)
-example14_OBJECTS = $(am_example14_OBJECTS)
-example14_LDADD = $(LDADD)
-am__example15_SOURCES_DIST = example15.s
-@HAVE_ARM_COMPILER_TRUE@am_example15_OBJECTS = example15.$(OBJEXT)
-example15_OBJECTS = $(am_example15_OBJECTS)
-example15_LDADD = $(LDADD)
 am__example16_SOURCES_DIST = example16.s
 @HAVE_ARM_COMPILER_TRUE@am_example16_OBJECTS = example16.$(OBJEXT)
 example16_OBJECTS = $(am_example16_OBJECTS)
 example16_LDADD = $(LDADD)
-am__example17_SOURCES_DIST = example17.s
-@HAVE_ARM_COMPILER_TRUE@am_example17_OBJECTS = example17.$(OBJEXT)
-example17_OBJECTS = $(am_example17_OBJECTS)
-example17_LDADD = $(LDADD)
 am__example2_SOURCES_DIST = example2.s
 @HAVE_ARM_COMPILER_TRUE@am_example2_OBJECTS = example2.$(OBJEXT)
 example2_OBJECTS = $(am_example2_OBJECTS)
@@ -170,10 +138,6 @@ am__example8_SOURCES_DIST = example8.s
 @HAVE_ARM_COMPILER_TRUE@am_example8_OBJECTS = example8.$(OBJEXT)
 example8_OBJECTS = $(am_example8_OBJECTS)
 example8_LDADD = $(LDADD)
-am__example9_SOURCES_DIST = example9.s
-@HAVE_ARM_COMPILER_TRUE@am_example9_OBJECTS = example9.$(OBJEXT)
-example9_OBJECTS = $(am_example9_OBJECTS)
-example9_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -204,21 +168,14 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(example1_SOURCES) $(example10_SOURCES) \
-	$(example11_SOURCES) $(example12_SOURCES) $(example13_SOURCES) \
-	$(example14_SOURCES) $(example15_SOURCES) $(example16_SOURCES) \
-	$(example17_SOURCES) $(example2_SOURCES) $(example3_SOURCES) \
-	$(example4_SOURCES) $(example6_SOURCES) $(example7_SOURCES) \
-	$(example8_SOURCES) $(example9_SOURCES)
+SOURCES = $(example1_SOURCES) $(example16_SOURCES) $(example2_SOURCES) \
+	$(example3_SOURCES) $(example4_SOURCES) $(example6_SOURCES) \
+	$(example7_SOURCES) $(example8_SOURCES)
 DIST_SOURCES = $(am__example1_SOURCES_DIST) \
-	$(am__example10_SOURCES_DIST) $(am__example11_SOURCES_DIST) \
-	$(am__example12_SOURCES_DIST) $(am__example13_SOURCES_DIST) \
-	$(am__example14_SOURCES_DIST) $(am__example15_SOURCES_DIST) \
-	$(am__example16_SOURCES_DIST) $(am__example17_SOURCES_DIST) \
-	$(am__example2_SOURCES_DIST) $(am__example3_SOURCES_DIST) \
-	$(am__example4_SOURCES_DIST) $(am__example6_SOURCES_DIST) \
-	$(am__example7_SOURCES_DIST) $(am__example8_SOURCES_DIST) \
-	$(am__example9_SOURCES_DIST)
+	$(am__example16_SOURCES_DIST) $(am__example2_SOURCES_DIST) \
+	$(am__example3_SOURCES_DIST) $(am__example4_SOURCES_DIST) \
+	$(am__example6_SOURCES_DIST) $(am__example7_SOURCES_DIST) \
+	$(am__example8_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -386,15 +343,7 @@ ACLOCAL_AMFLAGS = -I ../m4
 @HAVE_ARM_COMPILER_TRUE@example6_SOURCES = example6.s
 @HAVE_ARM_COMPILER_TRUE@example7_SOURCES = example7.s
 @HAVE_ARM_COMPILER_TRUE@example8_SOURCES = example8.s
-@HAVE_ARM_COMPILER_TRUE@example9_SOURCES = example9.s
-@HAVE_ARM_COMPILER_TRUE@example10_SOURCES = example10.s
-@HAVE_ARM_COMPILER_TRUE@example11_SOURCES = example11.s
-@HAVE_ARM_COMPILER_TRUE@example12_SOURCES = example12.s
-@HAVE_ARM_COMPILER_TRUE@example13_SOURCES = example13.s
-@HAVE_ARM_COMPILER_TRUE@example14_SOURCES = example14.s
-@HAVE_ARM_COMPILER_TRUE@example15_SOURCES = example15.s
 @HAVE_ARM_COMPILER_TRUE@example16_SOURCES = example16.s
-@HAVE_ARM_COMPILER_TRUE@example17_SOURCES = example17.s
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -456,37 +405,9 @@ example1$(EXEEXT): $(example1_OBJECTS) $(example1_DEPENDENCIES) $(EXTRA_example1
 	@rm -f example1$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(example1_OBJECTS) $(example1_LDADD) $(LIBS)
 
-example10$(EXEEXT): $(example10_OBJECTS) $(example10_DEPENDENCIES) $(EXTRA_example10_DEPENDENCIES) 
-	@rm -f example10$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(example10_OBJECTS) $(example10_LDADD) $(LIBS)
-
-example11$(EXEEXT): $(example11_OBJECTS) $(example11_DEPENDENCIES) $(EXTRA_example11_DEPENDENCIES) 
-	@rm -f example11$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(example11_OBJECTS) $(example11_LDADD) $(LIBS)
-
-example12$(EXEEXT): $(example12_OBJECTS) $(example12_DEPENDENCIES) $(EXTRA_example12_DEPENDENCIES) 
-	@rm -f example12$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(example12_OBJECTS) $(example12_LDADD) $(LIBS)
-
-example13$(EXEEXT): $(example13_OBJECTS) $(example13_DEPENDENCIES) $(EXTRA_example13_DEPENDENCIES) 
-	@rm -f example13$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(example13_OBJECTS) $(example13_LDADD) $(LIBS)
-
-example14$(EXEEXT): $(example14_OBJECTS) $(example14_DEPENDENCIES) $(EXTRA_example14_DEPENDENCIES) 
-	@rm -f example14$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(example14_OBJECTS) $(example14_LDADD) $(LIBS)
-
-example15$(EXEEXT): $(example15_OBJECTS) $(example15_DEPENDENCIES) $(EXTRA_example15_DEPENDENCIES) 
-	@rm -f example15$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(example15_OBJECTS) $(example15_LDADD) $(LIBS)
-
 example16$(EXEEXT): $(example16_OBJECTS) $(example16_DEPENDENCIES) $(EXTRA_example16_DEPENDENCIES) 
 	@rm -f example16$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(example16_OBJECTS) $(example16_LDADD) $(LIBS)
-
-example17$(EXEEXT): $(example17_OBJECTS) $(example17_DEPENDENCIES) $(EXTRA_example17_DEPENDENCIES) 
-	@rm -f example17$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(example17_OBJECTS) $(example17_LDADD) $(LIBS)
 
 example2$(EXEEXT): $(example2_OBJECTS) $(example2_DEPENDENCIES) $(EXTRA_example2_DEPENDENCIES) 
 	@rm -f example2$(EXEEXT)
@@ -511,10 +432,6 @@ example7$(EXEEXT): $(example7_OBJECTS) $(example7_DEPENDENCIES) $(EXTRA_example7
 example8$(EXEEXT): $(example8_OBJECTS) $(example8_DEPENDENCIES) $(EXTRA_example8_DEPENDENCIES) 
 	@rm -f example8$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(example8_OBJECTS) $(example8_LDADD) $(LIBS)
-
-example9$(EXEEXT): $(example9_OBJECTS) $(example9_DEPENDENCIES) $(EXTRA_example9_DEPENDENCIES) 
-	@rm -f example9$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(example9_OBJECTS) $(example9_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
