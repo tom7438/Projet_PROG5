@@ -293,7 +293,7 @@ void print_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, 
 void read_symbol_section(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, size_t *nbSymboles){
     Elf32_SH symtab;
     // si pas de .symtab, erreur
-    if (get_section_by_name(".symtab", elf_h.e_shnum, arr_elf_SH, &symtab) == 0) exit(1);
+    if (get_section_by_name(".symtab", elf_h.e_shnum, arr_elf_SH, &symtab) == 0) return;
     fseek(f, symtab.sh_offset, SEEK_SET);
 
     Elf32_Sym elf_SYM;
