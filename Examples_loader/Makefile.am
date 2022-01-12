@@ -26,6 +26,7 @@ example4_SOURCES=example4.s
 example6_SOURCES=example6.s
 example7_SOURCES=example7.s
 example8_SOURCES=example8.s
+example9_SOURCES=example9.s
 example16_SOURCES=example16.s
 
 endif

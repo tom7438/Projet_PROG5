@@ -90,7 +90,7 @@ POST_UNINSTALL = :
 @HAVE_ARM_COMPILER_TRUE@	example2$(EXEEXT) example3$(EXEEXT) \
 @HAVE_ARM_COMPILER_TRUE@	example4$(EXEEXT) example6$(EXEEXT) \
 @HAVE_ARM_COMPILER_TRUE@	example7$(EXEEXT) example8$(EXEEXT) \
-@HAVE_ARM_COMPILER_TRUE@	example16$(EXEEXT)
+@HAVE_ARM_COMPILER_TRUE@	example16$(EXEEXT) example9$(EXEEXT) \
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/../m4/ax_check_compile_flag.m4 \
@@ -138,6 +138,10 @@ am__example8_SOURCES_DIST = example8.s
 @HAVE_ARM_COMPILER_TRUE@am_example8_OBJECTS = example8.$(OBJEXT)
 example8_OBJECTS = $(am_example8_OBJECTS)
 example8_LDADD = $(LDADD)
+am__example9_SOURCES_DIST = example9.s
+@HAVE_ARM_COMPILER_TRUE@am_example9_OBJECTS = example9.$(OBJEXT)
+example9_OBJECTS = $(am_example9_OBJECTS)
+example9_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -170,12 +174,12 @@ am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(example1_SOURCES) $(example16_SOURCES) $(example2_SOURCES) \
 	$(example3_SOURCES) $(example4_SOURCES) $(example6_SOURCES) \
-	$(example7_SOURCES) $(example8_SOURCES)
+	$(example7_SOURCES) $(example8_SOURCES) $(example9_SOURCES)
 DIST_SOURCES = $(am__example1_SOURCES_DIST) \
 	$(am__example16_SOURCES_DIST) $(am__example2_SOURCES_DIST) \
 	$(am__example3_SOURCES_DIST) $(am__example4_SOURCES_DIST) \
 	$(am__example6_SOURCES_DIST) $(am__example7_SOURCES_DIST) \
-	$(am__example8_SOURCES_DIST)
+	$(am__example8_SOURCES_DIST) $(am__example9_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -343,6 +347,7 @@ ACLOCAL_AMFLAGS = -I ../m4
 @HAVE_ARM_COMPILER_TRUE@example6_SOURCES = example6.s
 @HAVE_ARM_COMPILER_TRUE@example7_SOURCES = example7.s
 @HAVE_ARM_COMPILER_TRUE@example8_SOURCES = example8.s
+@HAVE_ARM_COMPILER_TRUE@example9_SOURCES = example9.s
 @HAVE_ARM_COMPILER_TRUE@example16_SOURCES = example16.s
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -432,6 +437,11 @@ example7$(EXEEXT): $(example7_OBJECTS) $(example7_DEPENDENCIES) $(EXTRA_example7
 example8$(EXEEXT): $(example8_OBJECTS) $(example8_DEPENDENCIES) $(EXTRA_example8_DEPENDENCIES) 
 	@rm -f example8$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(example8_OBJECTS) $(example8_LDADD) $(LIBS)
+
+example9$(EXEEXT): $(example9_OBJECTS) $(example9_DEPENDENCIES) $(EXTRA_example9_DEPENDENCIES) 
+	@rm -f example9$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(example9_OBJECTS) $(example9_LDADD) $(LIBS)
+
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
