@@ -17,7 +17,7 @@ AM_LDFLAGS+=-Wl,--section-start -Wl,.text=0x20 -Wl,--section-start -Wl,.data=0x2
 # Big endian
 AM_LDFLAGS+=-Wl,-EB
 
-noinst_PROGRAMS=example1 example2 example3 example4 example6 example7 example8 example16 
+noinst_PROGRAMS=example1 example2 example3 example4 example6 example7 example8 example9 example16 
 
 example1_SOURCES=example1.s
 example2_SOURCES=example2.s
