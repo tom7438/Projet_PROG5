@@ -4,7 +4,7 @@ n=0
 for file in $(ls Examples_loader/*.o)
 do
   err=0
-
+  n=$(($n+1))
   echo $file :
   echo -------------------------------------------------
   (readelf -r $file > std)
@@ -25,13 +25,21 @@ do
       echo $mot >> cstm_l
     fi
   done
+
+  if ! [[ -f "cstm_l" ]] && [[ "$(sed -n 1p std)" == ""  ]]
+  then
+    echo Pas de relocs
+    echo OK
+    rm std ; rm cstm ; rm std_l ;
+    continue
+  fi
+
   echo comparaison output standard et custom...
   diff -w cstm_l std_l > diffout
   for line in $(cat diffout)
   do
     err=$(($err+1))
     echo $line
-    echo ERROR
   done
 
   if [[ $err -ne 0 ]]
@@ -41,7 +49,7 @@ do
   else
     echo OK
   fi
-  n=$(($n+1))
+
 
   rm std
   rm cstm
