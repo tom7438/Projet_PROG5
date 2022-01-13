@@ -90,7 +90,7 @@ POST_UNINSTALL = :
 @HAVE_ARM_COMPILER_TRUE@	example2$(EXEEXT) example3$(EXEEXT) \
 @HAVE_ARM_COMPILER_TRUE@	example4$(EXEEXT) example6$(EXEEXT) \
 @HAVE_ARM_COMPILER_TRUE@	example7$(EXEEXT) example8$(EXEEXT) \
-@HAVE_ARM_COMPILER_TRUE@	example16$(EXEEXT) example9$(EXEEXT) \
+@HAVE_ARM_COMPILER_TRUE@	example9$(EXEEXT) example16$(EXEEXT)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/../m4/ax_check_compile_flag.m4 \
@@ -441,7 +441,6 @@ example8$(EXEEXT): $(example8_OBJECTS) $(example8_DEPENDENCIES) $(EXTRA_example8
 example9$(EXEEXT): $(example9_OBJECTS) $(example9_DEPENDENCIES) $(EXTRA_example9_DEPENDENCIES) 
 	@rm -f example9$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(example9_OBJECTS) $(example9_LDADD) $(LIBS)
-
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
