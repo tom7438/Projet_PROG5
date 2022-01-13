@@ -162,7 +162,7 @@ int main(int argc, char *argv[]) {
                 // -- lecture des noms de symboles avant affichage 
                 read_symbol_names(f, strtab);
                 read_relocsa(f, header, sections, rel_array, rela_array, &nbRelocs, &nbRela);
-                print_relocs(header, sections, symbols, rel_array, rela_array, nbRelocs, nbRela);
+                print_relocs(stdout, header, sections, symbols, rel_array, rela_array, nbRelocs, nbRela);
                 
                 FILE *f2 = fopen(ELF_filename, "r+");
                 for (int k =0; k < nbRelocs; k++){ 

@@ -13,8 +13,6 @@ autom4te.cache
 aclocal.m4
 .deps
 *~
-config.guess
-config.sub
 .dirstamp
 read_elf
 reloc_elf

@@ -314,8 +314,8 @@ void read_symbol_section(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *
  * @brief Affiche dans le flux de sortie spécifié les informations
  *        du symbole
  * 
- * @param f flux
  * @param fout flux de sortie
+ * @param arr_elf_SH tableau d'en-têtes section
  * @param elf_SYM symbole
  */
 void print_symbol(FILE *fout, Elf32_SH *arr_elf_SH, Elf32_Sym elf_SYM) {
@@ -462,9 +462,10 @@ void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *ar
 }
 
 /**
- * @brief Affiche dans le flux de sortie (stdout) les sections
+ * @brief Affiche dans le flux de sortie les sections
  *        de relocations SHT_REL et SHT_RELA
  * 
+ * @param f flux de sortie
  * @param elf_h en-tête section
  * @param arr_elf_SH tableau d'en-têtes section
  * @param arr_elf_SYM tableau de symboles
@@ -473,51 +474,51 @@ void read_relocsa(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_RelArray *ar
  * @param nbRel nb de relocations SHT_REL
  * @param nbRela nb de relocations SHT_RELA
  */
-void print_relocs(Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, Elf32_RelArray *arr_elf_REL, Elf32_RelaArray *arr_elf_RELA, size_t nbRel, size_t nbRela) {
+void print_relocs(FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, Elf32_RelArray *arr_elf_REL, Elf32_RelaArray *arr_elf_RELA, size_t nbRel, size_t nbRela) {
     for (int i = 0; i < nbRel; i++) {
         Elf32_RelArray rel = arr_elf_REL[i];
         Elf32_SH sec = arr_elf_SH[rel.s_index];
-        printf("Relocation section '%s' at offset 0x%.3x contains %d entries:\n", 
+        fprintf(fout, "Relocation section '%s' at offset 0x%.3x contains %d entries:\n", 
             read_from_shstrtab(sec.sh_name),
             sec.sh_offset,
             rel.rnum);
         
-        printf(" Offset\t Info\t\tType\t\tSym.Value\tSym.Name\n");
+        fprintf(fout, " Offset\t Info\t\tType\t\tSym.Value\tSym.Name\n");
 
         for (int j = 0; j < rel.rnum; j++) {
             Elf32_Rel r = rel.relocations[j];
-            printf("%08x ", r.r_offset);
-            printf("%08x\t", r.r_info);
+            fprintf(fout, "%08x ", r.r_offset);
+            fprintf(fout, "%08x\t", r.r_info);
 
             switch (ELF32_R_TYPE(r.r_info)) {
-                case R_ARM_NONE: printf("R_ARM_NONE"); break;
-                case R_ARM_PC24: printf("R_ARM_PC24"); break;
-                case R_ARM_ABS32: printf("R_ARM_ABS32"); break;
-                case R_ARM_CALL: printf("R_ARM_CALL"); break;
-                case R_ARM_JUMP24: printf("R_ARM_JUMP24"); break;
-                case R_ARM_V4BX: printf("R_ARM_V4BX"); break;
-                case R_ARM_PREL31: printf("R_ARM_PREL31"); break;
-                case R_ARM_MOVW_ABS_NC: printf("R_ARM_MOVW_ABS_NC"); break;
-                case R_ARM_MOVT_ABS: printf("R_ARM_MOVT_ABS"); break;
-                case R_ARM_THM_CALL: printf("R_ARM_THM_CALL"); break;
-                case R_ARM_THM_JUMP24: printf("R_ARM_THM_JUMP24"); break;
-                case R_ARM_THM_MOVW_ABS_NC: printf("R_ARM_MOVW_ABS_NC"); break;
-                case R_ARM_THM_MOVT_ABS: printf("R_ARM_THM_MOVT_ABS"); break;
-                default: printf("R_UNKNOWN"); break;
+                case R_ARM_NONE: fprintf(fout, "R_ARM_NONE"); break;
+                case R_ARM_PC24: fprintf(fout, "R_ARM_PC24"); break;
+                case R_ARM_ABS32: fprintf(fout, "R_ARM_ABS32"); break;
+                case R_ARM_CALL: fprintf(fout, "R_ARM_CALL"); break;
+                case R_ARM_JUMP24: fprintf(fout, "R_ARM_JUMP24"); break;
+                case R_ARM_V4BX: fprintf(fout, "R_ARM_V4BX"); break;
+                case R_ARM_PREL31: fprintf(fout, "R_ARM_PREL31"); break;
+                case R_ARM_MOVW_ABS_NC: fprintf(fout, "R_ARM_MOVW_ABS_NC"); break;
+                case R_ARM_MOVT_ABS: fprintf(fout, "R_ARM_MOVT_ABS"); break;
+                case R_ARM_THM_CALL: fprintf(fout, "R_ARM_THM_CALL"); break;
+                case R_ARM_THM_JUMP24: fprintf(fout, "R_ARM_THM_JUMP24"); break;
+                case R_ARM_THM_MOVW_ABS_NC: fprintf(fout, "R_ARM_MOVW_ABS_NC"); break;
+                case R_ARM_THM_MOVT_ABS: fprintf(fout, "R_ARM_THM_MOVT_ABS"); break;
+                default: fprintf(fout, "R_UNKNOWN"); break;
             }
-            printf("\t");
+            fprintf(fout, "\t");
 
             Elf32_Sym sym = arr_elf_SYM[ELF32_R_SYM(r.r_info)];
-            printf("%08X", sym.st_value);
-            printf("\t");
+            fprintf(fout, "%08X", sym.st_value);
+            fprintf(fout, "\t");
             if (ELF32_ST_TYPE(sym.st_info) == STT_SECTION) {
-                printf("%s", read_from_shstrtab(arr_elf_SH[sym.st_shndx].sh_name));
+                fprintf(fout, "%s", read_from_shstrtab(arr_elf_SH[sym.st_shndx].sh_name));
             } else {
-                printf("%s", read_from_symtab(sym.st_name));
+                fprintf(fout, "%s", read_from_symtab(sym.st_name));
             }
-            printf("\n");
+            fprintf(fout, "\n");
         }
-        printf("\n");
+        fprintf(fout, "\n");
     }
 
     // -- "rela" (apparemment pas nécessaire?)
@@ -525,44 +526,44 @@ void print_relocs(Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, Elf
     for (int i = 0; i < nbRela; i++) {
         Elf32_RelaArray rel = arr_elf_RELA[i];
         Elf32_SH sec = arr_elf_SH[rel.s_index];
-        printf("Relocation section '%s' at offset 0x%.3x contains %d entries:\n", 
+        fprintf(fout, "Relocation section '%s' at offset 0x%.3x contains %d entries:\n", 
             read_from_shstrtab(sec.sh_name),
             sec.sh_offset,
             rel.rnum);
         
-        printf(" Offset\t Info\t\tType\t\tSym.Value\tSym.Name\tAddend\n");
+        fprintf(fout, " Offset\t Info\t\tType\t\tSym.Value\tSym.Name\tAddend\n");
 
         for (int j = 0; j < rel.rnum; j++) {
             Elf32_Rela r = rel.relocations[j];
-            printf("%08x ", r.r_offset);
-            printf("%08x\t", r.r_info);
+            fprintf(fout, "%08x ", r.r_offset);
+            fprintf(fout, "%08x\t", r.r_info);
 
             switch (ELF32_R_TYPE(r.r_info)) {
-                case R_ARM_NONE: printf("R_ARM_NONE"); break;
-                case R_ARM_PC24: printf("R_ARM_PC24"); break;
-                case R_ARM_ABS32: printf("R_ARM_ABS32"); break;
-                case R_ARM_CALL: printf("R_ARM_CALL"); break;
-                case R_ARM_JUMP24: printf("R_ARM_JUMP24"); break;
-                case R_ARM_V4BX: printf("R_ARM_V4BX"); break;
-                case R_ARM_PREL31: printf("R_ARM_PREL31"); break;
-                case R_ARM_MOVW_ABS_NC: printf("R_ARM_MOVW_ABS_NC"); break;
-                case R_ARM_MOVT_ABS: printf("R_ARM_MOVT_ABS"); break;
-                case R_ARM_THM_CALL: printf("R_ARM_THM_CALL"); break;
-                case R_ARM_THM_JUMP24: printf("R_ARM_THM_JUMP24"); break;
-                case R_ARM_THM_MOVW_ABS_NC: printf("R_ARM_MOVW_ABS_NC"); break;
-                case R_ARM_THM_MOVT_ABS: printf("R_ARM_THM_MOVT_ABS"); break;
-                default: printf("R_UNKNOWN"); break;
+                case R_ARM_NONE: fprintf(fout, "R_ARM_NONE"); break;
+                case R_ARM_PC24: fprintf(fout, "R_ARM_PC24"); break;
+                case R_ARM_ABS32: fprintf(fout, "R_ARM_ABS32"); break;
+                case R_ARM_CALL: fprintf(fout, "R_ARM_CALL"); break;
+                case R_ARM_JUMP24: fprintf(fout, "R_ARM_JUMP24"); break;
+                case R_ARM_V4BX: fprintf(fout, "R_ARM_V4BX"); break;
+                case R_ARM_PREL31: fprintf(fout, "R_ARM_PREL31"); break;
+                case R_ARM_MOVW_ABS_NC: fprintf(fout, "R_ARM_MOVW_ABS_NC"); break;
+                case R_ARM_MOVT_ABS: fprintf(fout, "R_ARM_MOVT_ABS"); break;
+                case R_ARM_THM_CALL: fprintf(fout, "R_ARM_THM_CALL"); break;
+                case R_ARM_THM_JUMP24: fprintf(fout, "R_ARM_THM_JUMP24"); break;
+                case R_ARM_THM_MOVW_ABS_NC: fprintf(fout, "R_ARM_MOVW_ABS_NC"); break;
+                case R_ARM_THM_MOVT_ABS: fprintf(fout, "R_ARM_THM_MOVT_ABS"); break;
+                default: fprintf(fout, "R_UNKNOWN"); break;
             }
-            printf("\t");
+            fprintf(fout, "\t");
 
             Elf32_Sym sym = arr_elf_SYM[ELF32_R_SYM(r.r_info)];
-            printf("%08X", sym.st_value);
-            printf("\t");
-            printf("%s", read_from_shstrtab(arr_elf_SH[sym.st_shndx].sh_name));
-            printf("\t");
-            printf("%d", r.r_addend);
-            printf("\n");
+            fprintf(fout, "%08X", sym.st_value);
+            fprintf(fout, "\t");
+            fprintf(fout, "%s", read_from_shstrtab(arr_elf_SH[sym.st_shndx].sh_name));
+            fprintf(fout, "\t");
+            fprintf(fout, "%d", r.r_addend);
+            fprintf(fout, "\n");
         }
-        printf("\n");
+        fprintf(fout, "\n");
     }
 }
