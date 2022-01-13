@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include "elf_lib/elf_lib.h"
 #include "elf_lib/elf_utils.h"
+int  headerDebug=1;
 
 void usage(char *name) {
 	fprintf(stderr, "Usage:\n"
@@ -92,6 +93,7 @@ int main(int argc, char *argv[]) {
         size_t nbSymboles;
         // -- lecture de l'en-tête
         init_header(f, &header);
+        headerDebug=0;
         // -- lecture des sections
         read_sections(f, header, sections);
         // -- lecture des noms de sections
