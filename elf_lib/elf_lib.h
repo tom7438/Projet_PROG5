@@ -391,8 +391,8 @@ void print_data_section(FILE *f, FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, 
 /* Etape 4 */
 
 void read_symbol_section(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *arr_elf_SYM, size_t *nbSymboles);
-void print_symbol(FILE *fout, Elf32_Sym elf_SYM);
-void print_symbols(FILE *fout, Elf32 elf_h, size_t nbSymboles, Elf32_Sym * arr_elf_SYM);
+void print_symbol(FILE *fout, Elf32_SH *arr_elf_sh, Elf32_Sym elf_SYM);
+void print_symbols(FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, size_t nbSymboles, Elf32_Sym * arr_elf_SYM);
 
 /* Etape 5 */
 

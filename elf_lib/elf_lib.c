@@ -318,7 +318,7 @@ void read_symbol_section(FILE *f, Elf32 elf_h, Elf32_SH *arr_elf_SH, Elf32_Sym *
  * @param fout flux de sortie
  * @param elf_SYM symbole
  */
-void print_symbol(FILE *fout, Elf32_Sym elf_SYM) {
+void print_symbol(FILE *fout, Elf32_SH *arr_elf_SH, Elf32_Sym elf_SYM) {
     fprintf(fout, "\t%08x", elf_SYM.st_value);
     fprintf(fout, "\t   0");
 
@@ -350,7 +350,8 @@ void print_symbol(FILE *fout, Elf32_Sym elf_SYM) {
             fprintf(fout, "%d", elf_SYM.st_shndx);
             break;
     }
-    fprintf(fout, " %s", read_from_symtab(elf_SYM.st_name));
+    if (ELF32_ST_TYPE(elf_SYM.st_info) == STT_SECTION)  fprintf(fout, " %s", read_from_shstrtab(arr_elf_SH[elf_SYM.st_shndx].sh_name));
+    else fprintf(fout, " %s", read_from_symtab(elf_SYM.st_name));
     fprintf(fout, "\n");
 }
 
@@ -364,7 +365,7 @@ void print_symbol(FILE *fout, Elf32_Sym elf_SYM) {
  * @param nbSymboles nb de symboles
  * @param arr_elf_SYM tableau de symboles
  */
-void print_symbols(FILE *fout, Elf32 elf_h, size_t nbSymboles, Elf32_Sym * arr_elf_SYM) {
+void print_symbols(FILE *fout, Elf32 elf_h, Elf32_SH *arr_elf_SH, size_t nbSymboles, Elf32_Sym * arr_elf_SYM) {
     fprintf(fout, "\n");
     fprintf(fout, "Symbol table '.symtab' contains %lu entries:\n", nbSymboles);
     fprintf(fout, "   Num:\tValue\t\tSize\tType\tBind\tVis\tNdx Name\n");
@@ -374,7 +375,7 @@ void print_symbols(FILE *fout, Elf32 elf_h, size_t nbSymboles, Elf32_Sym * arr_e
         fprintf(fout, "   ");
         if (i > 9) fprintf(fout, " %d:", i); 
         else fprintf(fout, "  %d:", i);
-        print_symbol(fout, arr_elf_SYM[i]);
+        print_symbol(fout, arr_elf_SH, arr_elf_SYM[i]);
     }
 }
 

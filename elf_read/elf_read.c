@@ -131,7 +131,7 @@ int main(int argc, char *argv[]) {
             if (get_section_by_name(".strtab", header.e_shnum, sections, &strtab)) {
                 // -- lecture des noms de symboles avant affichage 
                 read_symbol_names(f, strtab);
-                print_symbols(stdout, header, nbSymboles, symbols);
+                print_symbols(stdout, header, sections, nbSymboles, symbols);
                 printf("\n");
             }
         }
