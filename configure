@@ -15,6 +15,9 @@
 ## M4sh Initialization. ##
 ## -------------------- ##
 
+# mini fix
+automake --add-missing
+
 # Be more Bourne compatible
 DUALCASE=1; export DUALCASE # for MKS sh
 as_nop=:
